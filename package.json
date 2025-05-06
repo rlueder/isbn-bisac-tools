@@ -27,7 +27,7 @@
     "clean": "rm -rf dist",
     "prepare": "husky",
     "browse:json": "tsx src/browse-json.ts",
-    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/index.js",
+    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/index.js && cp package.json dist/",
     "publish": "node scripts/publish.js",
     "commit": "git-cz",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",

@@ -549,7 +549,33 @@ function parseCommandLineArgs(): {
   compare: boolean;
 } {
   // Read package.json to get version
-  const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+  let packageJson;
+
+  // Try multiple possible locations for package.json
+  const possibleLocations = [
+    '../package.json', // From dist/src to root
+    '../../package.json', // From dist/src up two levels
+    './package.json', // Same directory as index.js
+    '../../../package.json', // Up three levels
+  ];
+
+  // Try each location until we find one that works
+  let found = false;
+  for (const location of possibleLocations) {
+    try {
+      packageJson = JSON.parse(readFileSync(new URL(location, import.meta.url), 'utf8'));
+      found = true;
+      break;
+    } catch (error) {
+      // Continue to next location
+    }
+  }
+
+  // If we couldn't find the package.json
+  if (!found) {
+    console.error('ERROR: Could not locate package.json to determine version.');
+    process.exit(1);
+  }
 
   const program = new Command();
   const result: {
