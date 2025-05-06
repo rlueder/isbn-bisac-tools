@@ -1,3 +1,15 @@
+## <small>0.2.4 (2025-05-06)</small>
+
+* fix: ship with bisac-data.json ([5353f16](https://github.com/yourusername/isbn-bisac-tools/commit/5353f16))
+
+
+
+## <small>0.2.4 (2025-05-06)</small>
+
+* fix: ship with bisac-data.json ([5353f16](https://github.com/yourusername/isbn-bisac-tools/commit/5353f16))
+
+
+
 ## <small>0.2.3 (2025-05-06)</small>
 
 * chore: update publishing workflow ([81ce48a](https://github.com/yourusername/isbn-bisac-tools/commit/81ce48a))
