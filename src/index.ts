@@ -673,8 +673,12 @@ Note:
 `);
 }
 
-// Only execute directly if this file is run directly (not required/imported)
-if (import.meta.url === `file://${process.argv[1]}`) {
+// Execute when run directly or when called as a CLI command
+// This ensures it works both with direct node execution and when installed globally
+if (
+  import.meta.url === `file://${process.argv[1]}` ||
+  process.argv[1]?.endsWith('isbn-bisac-tools')
+) {
   void (async () => {
     try {
       // Parse command line arguments
