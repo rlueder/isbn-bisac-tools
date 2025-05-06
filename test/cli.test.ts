@@ -35,8 +35,9 @@ describe('CLI functionality', () => {
       expect(options).toEqual({
         shouldShowHelp: false,
         lookupMode: false,
-        takeScreenshots: false,
+        enableScreenshots: false,
         compare: false,
+        scrape: false,
       });
     });
 
@@ -90,7 +91,7 @@ describe('CLI functionality', () => {
       process.argv = ['node', 'index.js', '--screenshots'];
       const options = parseCommandLineArgs();
 
-      expect(options.takeScreenshots).toBe(true);
+      expect(options.enableScreenshots).toBe(true);
     });
 
     it('should parse --compare flag', () => {
@@ -116,7 +117,7 @@ describe('CLI functionality', () => {
       const options = parseCommandLineArgs();
 
       expect(options.categoryUrl).toBe('https://example.com');
-      expect(options.takeScreenshots).toBe(true);
+      expect(options.enableScreenshots).toBe(true);
     });
 
     it('should handle conflicting lookup modes', () => {

@@ -118,10 +118,10 @@ const CONFIG: ScraperConfig = {
   // Screenshot flag
   takeScreenshots: false,
   // Output paths
-  outputDir: path.join(process.cwd(), 'output'),
-  // Generate filename with date format YYYY-MM-DD
+  outputDir: path.join(process.cwd(), 'data'),
+  // Default data file location
   get jsonPath() {
-    return path.join(process.cwd(), 'output/bisac-data.json');
+    return path.join(process.cwd(), 'data/bisac-data.json');
   },
   screenshotsDir: path.join(process.cwd(), 'screenshots'),
   // Delay between page visits to avoid overloading the server
@@ -545,8 +545,9 @@ function parseCommandLineArgs(): {
   label?: string;
   isbn?: string;
   lookupMode: boolean;
-  takeScreenshots: boolean;
+  enableScreenshots: boolean;
   compare: boolean;
+  scrape: boolean;
 } {
   // Read package.json to get version
   let packageJson;
@@ -586,13 +587,15 @@ function parseCommandLineArgs(): {
     label?: string;
     isbn?: string;
     lookupMode: boolean;
-    takeScreenshots: boolean;
+    enableScreenshots: boolean;
     compare: boolean;
+    scrape: boolean;
   } = {
     shouldShowHelp: false,
     lookupMode: false,
-    takeScreenshots: false,
+    enableScreenshots: false,
     compare: false,
+    scrape: false,
   };
 
   program
@@ -605,6 +608,7 @@ function parseCommandLineArgs(): {
     .option('-l, --label <label>', 'Look up a specific label')
     .option('-i, --isbn <isbn>', 'Look up BISAC code(s) for a specific ISBN')
     .option('-s, --screenshots', 'Enable taking screenshots during scraping')
+    .option('--scrape', 'Run the BISAC web scraper to gather up-to-date data')
     .option('--compare', 'Compare two BISAC JSON files to identify changes')
     .helpOption('-h, --help', 'Display help for command')
     .action(options => {
@@ -640,11 +644,15 @@ function parseCommandLineArgs(): {
       }
 
       if (options.screenshots) {
-        result.takeScreenshots = true;
+        result.enableScreenshots = true;
       }
 
       if (options.compare) {
         result.compare = true;
+      }
+
+      if (options.scrape) {
+        result.scrape = true;
       }
     });
 
@@ -731,8 +739,9 @@ if (
         label,
         isbn,
         lookupMode,
-        takeScreenshots,
+        enableScreenshots,
         compare,
+        scrape: shouldScrape,
       } = parseCommandLineArgs();
 
       // Show help and exit if requested or if there's an issue with arguments
@@ -744,7 +753,7 @@ if (
       // Handle lookup operations
       if (lookupMode) {
         // Use the fixed filename for the data file
-        const dataFilePath = path.join(CONFIG.outputDir, 'bisac-data.json');
+        const dataFilePath = CONFIG.jsonPath;
 
         // Check if the file exists
         let actualFilePath = dataFilePath;
@@ -880,11 +889,45 @@ if (
         }
       }
 
-      // Check if a file with today's date already exists
-      const existingFile = await utils.checkExistingJsonFileForToday(CONFIG.outputDir);
-      if (existingFile) {
+      // Check if we're explicitly asked to scrape
+      const isScrapeCommand = process.argv[2] === 'scrape' || process.argv.includes('--scrape');
+      if (!isScrapeCommand && !categoryUrl && !shouldScrape) {
+        // If not explicitly asked to scrape, show help
+        console.log('ℹ️ To start scraping, use the --scrape flag or run with "scrape" command');
+        showHelp();
+        process.exit(0);
+      }
+
+      // Check if we're going to overwrite the default data file
+      const defaultDataExists = fs.existsSync(CONFIG.jsonPath);
+      if (defaultDataExists) {
         console.log(
-          `⚠️ A BISAC data file for today already exists: ${path.basename(existingFile)}`
+          `⚠️ This will overwrite the default BISAC data file: ${path.basename(CONFIG.jsonPath)}`
+        );
+
+        // Prompt for confirmation
+        const { shouldContinue } = await inquirer.prompt([
+          {
+            type: 'confirm',
+            name: 'shouldContinue',
+            message: 'Do you want to continue and overwrite the default data file?',
+            default: false,
+          },
+        ]);
+
+        if (!shouldContinue) {
+          console.log('🛑 Scraping cancelled by user.');
+          process.exit(0);
+        }
+
+        console.log('✅ Continuing with scraping...');
+      }
+
+      // Also check for today's file
+      const existingTodayFile = await utils.checkExistingJsonFileForToday(CONFIG.outputDir);
+      if (existingTodayFile && existingTodayFile !== CONFIG.jsonPath) {
+        console.log(
+          `⚠️ A BISAC data file for today already exists: ${path.basename(existingTodayFile)}`
         );
 
         // Prompt for confirmation
@@ -906,14 +949,17 @@ if (
       }
 
       // Set screenshot option in CONFIG
-      CONFIG.takeScreenshots = takeScreenshots;
+      CONFIG.takeScreenshots = Boolean(enableScreenshots);
       const data = await scrape(categoryUrl);
       console.log(`🏆 Final data count: ${data.length} categories.`);
 
       // Check if we have data and print overall statistics
       if (data.length > 0) {
         // Calculate total subjects across all categories
-        const totalSubjects = data.reduce((total, category) => total + category.subjects.length, 0);
+        const totalSubjects = data.reduce(
+          (total: number, category: Category) => total + category.subjects.length,
+          0
+        );
 
         // Find categories with most and least subjects
         const categoryWithMostSubjects = [...data].sort(

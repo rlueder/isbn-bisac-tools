@@ -9,7 +9,8 @@
   },
   "files": [
     "dist",
-    "lib"
+    "lib",
+    "data"
   ],
   "type": "module",
   "scripts": {
@@ -25,8 +26,9 @@
     "lint:fix": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\" --fix",
     "prepare": "husky",
     "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/index.js && cp package.json dist/",
+    "scrape": "tsx src/index.ts",
     "scrape:url": "tsx src/index.ts --url",
-    "start": "tsx src/index.ts",
+    "start": "tsx src/index.ts --help",
     "test": "vitest run",
     "test:bisac": "tsx test/bisac-selection.script.ts",
     "test:coverage": "vitest run --coverage",

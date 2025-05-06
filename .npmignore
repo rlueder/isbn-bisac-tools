@@ -46,3 +46,4 @@ coverage/
 # Allow these
 !dist/
 !lib/
+!data/

@@ -101,7 +101,8 @@ isbn-bisac-tools [options]
 npx isbn-bisac-tools [options]
 
 # Using from source (development)
-npm start [options]
+npm start          # Shows help information
+npm run scrape     # Runs the scraper
 # or
 tsx src/index.ts [options]
 ```
@@ -110,10 +111,10 @@ tsx src/index.ts [options]
 
 ```
 # Scrape all BISAC categories
-isbn-bisac-tools
+isbn-bisac-tools --scrape
 
 # Scrape a single category
-isbn-bisac-tools --url https://www.bisg.org/fiction
+isbn-bisac-tools --url https://www.bisg.org/fiction --scrape
 ```
 
 **Lookup Commands:**
@@ -297,7 +298,7 @@ Compares two BISAC JSON files to identify changes.
 
 The script generates:
 
-- JSON file: `./output/bisac-data.json`
+- JSON file: `./data/bisac-data.json` (shipped with the library)
 - Screenshots: `./screenshots/` directory (for debugging)
 - Console output: Progress information and statistics
 
@@ -334,7 +335,7 @@ The script generates:
 │   └── types/         # TypeScript type definitions
 ├── test/              # Unit tests
 ├── dist/              # Compiled JavaScript (generated)
-├── output/            # Generated data files
+├── data/              # BISAC data files (shipped with the library)
 ├── screenshots/       # Debug screenshots
 ├── tsconfig.json      # TypeScript configuration
 ├── eslint.config.js   # ESLint configuration
