@@ -9,6 +9,7 @@
 import puppeteer, { Browser, Page } from 'puppeteer';
 import * as path from 'path';
 import * as fs from 'fs';
+import { readFileSync } from 'fs';
 import * as utils from '../lib/utils.js';
 import { ScraperConfig, Category } from './types/index.js';
 
@@ -547,6 +548,9 @@ function parseCommandLineArgs(): {
   takeScreenshots: boolean;
   compare: boolean;
 } {
+  // Read package.json to get version
+  const packageJson = JSON.parse(readFileSync(new URL('../package.json', import.meta.url), 'utf8'));
+
   const program = new Command();
   const result: {
     categoryUrl?: string;
@@ -567,6 +571,7 @@ function parseCommandLineArgs(): {
 
   program
     .name('isbn-bisac-tools')
+    .version(packageJson.version, '-v, --version', 'Display the current version')
     .description('A toolkit for working with BISAC subject headings and ISBN lookups')
     .option('-u, --url <url>', 'Specific category URL to scrape')
     .option('-c, --code <code>', 'Look up a specific BISAC code')
@@ -624,6 +629,8 @@ function parseCommandLineArgs(): {
     result.shouldShowHelp = true;
   }
 
+  // Version flag is handled by Commander directly, so we don't need to handle it here
+
   return result;
 }
 
@@ -660,6 +667,7 @@ Flexible Matching:
 
 General Options:
   -h, --help             Show this help message
+  -v, --version          Display the current version
 
 Examples:
   npm start                              # Scrape all categories
@@ -672,6 +680,7 @@ Examples:
   npm start -- --isbn 9781234567890     # Get BISAC code(s) for a book with ISBN 9781234567890
   npm start -- --label "FICTION / War & Military"  # Get code for the given label
   npm start -- --compare                # Compare current bisac-data.json with a backup file
+  npm start -- --version                # Display the current version
 
 Note:
   The scraper output will be saved to output/bisac-data.json.
