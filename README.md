@@ -67,7 +67,7 @@ pnpm add isbn-bisac-tools
 
 ```
 # Clone the repository
-git clone [your-repo-url]
+git clone https://github.com/rlueder/isbn-bisac-tools.git
 cd isbn-bisac-tools
 
 # Install dependencies
@@ -354,7 +354,7 @@ The script generates:
 ### Setting Up for Development
 
 ```
-git clone [your-repo-url]
+git clone https://github.com/rlueder/isbn-bisac-tools.git
 cd isbn-bisac-tools
 npm install
 ```
