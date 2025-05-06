@@ -1,3 +1,11 @@
+## <small>0.1.3 (2025-05-06)</small>
+
+* chore: initial commit ([c5fb329](https://github.com/yourusername/isbn-bisac-tools/commit/c5fb329))
+* chore: npm publishing setup ([da14e50](https://github.com/yourusername/isbn-bisac-tools/commit/da14e50))
+* docs: update README ([5f5aa04](https://github.com/yourusername/isbn-bisac-tools/commit/5f5aa04))
+
+
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
