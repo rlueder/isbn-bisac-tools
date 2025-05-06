@@ -1,3 +1,21 @@
+## <small>0.2.2 (2025-05-06)</small>
+
+* chore: fix lint errors ([a1954b0](https://github.com/yourusername/isbn-bisac-tools/commit/a1954b0))
+* chore: formatting ([989f74d](https://github.com/yourusername/isbn-bisac-tools/commit/989f74d))
+* chore: improve error messages ([84e1310](https://github.com/yourusername/isbn-bisac-tools/commit/84e1310))
+* chore: initial commit ([c5fb329](https://github.com/yourusername/isbn-bisac-tools/commit/c5fb329))
+* chore: npm publishing setup ([da14e50](https://github.com/yourusername/isbn-bisac-tools/commit/da14e50))
+* chore: update version to 0.1.4 ([c897e7f](https://github.com/yourusername/isbn-bisac-tools/commit/c897e7f))
+* chore(release): bump version to 0.2.1 ([3cfe328](https://github.com/yourusername/isbn-bisac-tools/commit/3cfe328))
+* feat: add version command ([ba55c3e](https://github.com/yourusername/isbn-bisac-tools/commit/ba55c3e))
+* refactor: use bisac-data.json for output ([9d02e07](https://github.com/yourusername/isbn-bisac-tools/commit/9d02e07))
+* 0.1.3 ([344e3f5](https://github.com/yourusername/isbn-bisac-tools/commit/344e3f5))
+* fix: update CLI entry point for global installation ([0d1cf5d](https://github.com/yourusername/isbn-bisac-tools/commit/0d1cf5d))
+* docs: update README ([c74aca7](https://github.com/yourusername/isbn-bisac-tools/commit/c74aca7))
+* docs: update README ([5f5aa04](https://github.com/yourusername/isbn-bisac-tools/commit/5f5aa04))
+
+
+
 ## <small>0.2.1 (2025-05-06)</small>
 
 * feat: add version command ([ba55c3e](https://github.com/yourusername/isbn-bisac-tools/commit/ba55c3e))
