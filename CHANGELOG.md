@@ -1,3 +1,17 @@
+## <small>0.2.3 (2025-05-06)</small>
+
+* chore: update publishing workflow ([81ce48a](https://github.com/yourusername/isbn-bisac-tools/commit/81ce48a))
+* fix: issue with --version command ([016c415](https://github.com/yourusername/isbn-bisac-tools/commit/016c415))
+
+
+
+## <small>0.2.3 (2025-05-06)</small>
+
+* chore: update publishing workflow ([81ce48a](https://github.com/yourusername/isbn-bisac-tools/commit/81ce48a))
+* fix: issue with --version command ([016c415](https://github.com/yourusername/isbn-bisac-tools/commit/016c415))
+
+
+
 ## <small>0.2.2 (2025-05-06)</small>
 
 * chore: fix lint errors ([a1954b0](https://github.com/yourusername/isbn-bisac-tools/commit/a1954b0))
