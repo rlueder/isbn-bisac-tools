@@ -1,5 +1,9 @@
-#!/usr/bin/env sh
-. "$(dirname -- "$0")/_/husky.sh"
+#!/bin/sh
+
+# Skip in CI environment
+if [ "$CI" = "true" ] || [ "$HUSKY" = "0" ]; then
+  exit 0
+fi
 
 npm run test
 npx lint-staged

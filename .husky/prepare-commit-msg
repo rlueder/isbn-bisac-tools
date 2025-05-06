@@ -1,0 +1,13 @@
+#!/bin/sh
+
+# Skip in CI environment
+if [ "$CI" = "true" ] || [ "$HUSKY" = "0" ]; then
+  exit 0
+fi
+
+# Check if this is a merge, rebase, or other git operation that already has a message
+if [ -z "${2}" ]; then
+  # Only use commitizen when no commit message type is specified (i.e., not a merge, rebase, etc.)
+  # This allows git commit -m "..." to work without invoking commitizen
+  exec < /dev/tty && npx cz --hook || true
+fi

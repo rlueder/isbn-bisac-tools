@@ -7,6 +7,8 @@
 
 A comprehensive TypeScript toolkit for working with BISAC (Book Industry Standards and Communications) Subject Headings and ISBN lookups.
 
+> **⚠️ IMPORTANT DISCLAIMER:** This library is not affiliated with, endorsed by, or associated with the Book Industry Study Group (BISG). It is an independent, educational project created for research and learning purposes only. BISAC Subject Headings are owned by BISG and this tool is not intended for commercial use. Users should respect BISG's terms of service and intellectual property rights when using this library.
+
 ## Table of Contents
 
 - [Features](#features)
@@ -356,6 +358,37 @@ git clone [your-repo-url]
 cd isbn-bisac-tools
 npm install
 ```
+
+### Commit Conventions
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/) for structured, semantic commit messages. The following tools are set up to help maintain this convention:
+
+- **Commitizen**: Interactive prompt to format commit messages
+- **Commitlint**: Validates commit messages against the convention
+- **Husky**: Git hooks to enforce validation before commits
+
+To create a properly formatted commit:
+
+```
+# Use this instead of git commit
+npm run commit
+```
+
+This starts an interactive prompt to guide you through creating a conventional commit message. See [COMMIT_CONVENTION.md](./COMMIT_CONVENTION.md) for detailed examples and guidelines.
+
+Common types of commits:
+- `feat`: New features
+- `fix`: Bug fixes
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code changes that neither fix bugs nor add features
+- `test`: Adding or fixing tests
+- `chore`: Maintenance tasks
+
+These commit messages automatically help with semantic versioning:
+- `fix:` → patch version (0.0.X)
+- `feat:` → minor version (0.X.0)
+- `feat:` with `BREAKING CHANGE:` → major version (X.0.0)
 
 ### Adding New Features
 
