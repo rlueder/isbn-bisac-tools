@@ -390,6 +390,26 @@ These commit messages automatically help with semantic versioning:
 - `feat:` → minor version (0.X.0)
 - `feat:` with `BREAKING CHANGE:` → major version (X.0.0)
 
+### Automated Publishing
+
+This project uses GitHub Actions for fully automated publishing:
+
+1. When you push to the `master` branch, the CI workflow automatically:
+   - Analyzes commit messages since the last release
+   - Determines the appropriate version bump (patch, minor, or major)
+   - Updates the package.json version
+   - Generates the CHANGELOG entry
+   - Creates a git tag
+   - Publishes to npm
+
+This means you don't need to manually run any release commands. Just:
+1. Make your code changes
+2. Commit with the appropriate conventional commit type
+3. Push to master
+4. The GitHub Actions workflow handles versioning and publishing automatically
+
+For more details, see [PUBLISHING.md](./PUBLISHING.md).
+
 ### Adding New Features
 
 1. Write your TypeScript code

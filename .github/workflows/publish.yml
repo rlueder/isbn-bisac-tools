@@ -1,25 +1,98 @@
-name: Publish to npm
+name: Automated Release and Publish
 
 on:
-  release:
-    types: [created]
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to publish (patch, minor, major)'
-        required: true
-        default: 'patch'
-        type: choice
-        options:
-          - patch
-          - minor
-          - major
+  push:
+    branches:
+      - main
 
 permissions:
   contents: write
+  packages: write
 
 jobs:
+  determine-version:
+    runs-on: ubuntu-latest
+    outputs:
+      bump: ${{ steps.analyze-commits.outputs.bump }}
+      should_release: ${{ steps.analyze-commits.outputs.should_release }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Analyze commits for version bump
+        id: analyze-commits
+        run: |
+          # Get commits since last tag
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "none")
+
+          if [[ "$LATEST_TAG" == "none" ]]; then
+            COMMITS=$(git log --format="%s" -n 50)
+          else
+            COMMITS=$(git log ${LATEST_TAG}..HEAD --format="%s")
+          fi
+
+          echo "Analyzing commits since $LATEST_TAG"
+
+          # Initialize flags
+          HAS_BREAKING_CHANGE=false
+          HAS_FEAT=false
+          HAS_FIX=false
+          HAS_CHANGES=false
+
+          # Check if we have any new commits to process
+          if [[ -z "$COMMITS" ]]; then
+            echo "No new commits since last tag"
+            echo "should_release=false" >> $GITHUB_OUTPUT
+            exit 0
+          else
+            echo "should_release=true" >> $GITHUB_OUTPUT
+          fi
+
+          # Analyze commit messages
+          while IFS= read -r COMMIT; do
+            echo "Analyzing: $COMMIT"
+
+            # Check for BREAKING CHANGE
+            if [[ "$COMMIT" == *"BREAKING CHANGE"* || "$COMMIT" == *"!:"* ]]; then
+              echo "Found breaking change"
+              HAS_BREAKING_CHANGE=true
+            fi
+
+            # Check for feat:
+            if [[ "$COMMIT" == "feat"* || "$COMMIT" == "feat("* ]]; then
+              echo "Found feature"
+              HAS_FEAT=true
+            fi
+
+            # Check for fix:
+            if [[ "$COMMIT" == "fix"* || "$COMMIT" == "fix("* ]]; then
+              echo "Found fix"
+              HAS_FIX=true
+            fi
+
+            HAS_CHANGES=true
+          done <<< "$COMMITS"
+
+          # Determine version bump
+          if [ "$HAS_BREAKING_CHANGE" = true ]; then
+            echo "bump=major" >> $GITHUB_OUTPUT
+            echo "Will bump major version due to breaking changes"
+          elif [ "$HAS_FEAT" = true ]; then
+            echo "bump=minor" >> $GITHUB_OUTPUT
+            echo "Will bump minor version due to new features"
+          elif [ "$HAS_FIX" = true ] || [ "$HAS_CHANGES" = true ]; then
+            echo "bump=patch" >> $GITHUB_OUTPUT
+            echo "Will bump patch version due to fixes or other changes"
+          else
+            echo "bump=none" >> $GITHUB_OUTPUT
+            echo "No version bump needed"
+          fi
+
   build-and-publish:
+    needs: determine-version
+    if: needs.determine-version.outputs.should_release == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -34,7 +107,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Lint
         run: npm run lint
@@ -42,87 +115,65 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Set Git user
+        run: |
+          git config --local user.name "GitHub Actions"
+          git config --local user.email "actions@github.com"
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump version
+        id: version
+        run: |
+          # Bypass husky hooks in CI environment
+          export HUSKY=0
+
+          # Get current version from package.json
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+          echo "Current version: $CURRENT_VERSION"
+
+          # Check if current version exists on npm
+          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://registry.npmjs.org/isbn-bisac-tools/${CURRENT_VERSION})
+
+          if [ "$HTTP_STATUS" != "404" ]; then
+            echo "Version $CURRENT_VERSION already exists on npm. Bumping to ${{ needs.determine-version.outputs.bump }} version."
+
+            # Bump version without git tag (we'll create it later)
+            npm --no-git-tag-version version ${{ needs.determine-version.outputs.bump }}
+          else
+            echo "Version $CURRENT_VERSION doesn't exist on npm yet. Using this version."
+          fi
+
+          # Get the new version
+          NEW_VERSION=$(node -p "require('./package.json').version")
+          echo "New version: $NEW_VERSION"
+          echo "version=$NEW_VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update CHANGELOG
+        run: npm run changelog
+
       - name: Build
         run: npm run build
 
-      - name: Check and Publish (from release)
-        if: github.event_name == 'release'
+      - name: Commit changes
         run: |
-          # Ensure clean working directory
-          git status
-          git reset --hard HEAD
-          git clean -fd
-          
-          # Extract current version from package.json
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          echo "Current version: ${CURRENT_VERSION}"
-          
-          # Check if this version already exists on npm
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://registry.npmjs.org/isbn-bisac-tools/${CURRENT_VERSION})
-          
-          if [ "$HTTP_STATUS" = "404" ]; then
-            echo "Version ${CURRENT_VERSION} does not exist on npm. Publishing..."
-            export HUSKY=0
-            npm publish
-          else
-            echo "::warning::Version ${CURRENT_VERSION} already exists on npm. Please bump version before publishing."
-            exit 0
-          fi
+          git add package.json package-lock.json CHANGELOG.md
+          git commit -m "chore(release): ${{ steps.version.outputs.version }} [skip ci]" || echo "No changes to commit"
+
+      - name: Create git tag
+        run: |
+          git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
+
+      - name: Publish to npm
+        run: |
+          npm publish
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-      - name: Version and Publish (manual)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Push changes
         run: |
-          git config --global user.name 'GitHub Actions'
-          git config --global user.email 'actions@github.com'
-          # Set up git to use the GitHub token for authentication
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}.git
-          
-          # Ensure clean working directory
-          git status
-          git reset --hard HEAD
-          git clean -fd
-          
-          # Bypass husky hooks in CI environment
-          export HUSKY=0
-          
-          # Extract current version before bumping
-          CURRENT_VERSION=$(node -p "require('./package.json').version")
-          echo "Current version: ${CURRENT_VERSION}"
-          
-          # Check if current version exists on npm
-          HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://registry.npmjs.org/isbn-bisac-tools/${CURRENT_VERSION})
-          
-          if [ "$HTTP_STATUS" != "404" ]; then
-            echo "::warning::Version ${CURRENT_VERSION} already exists on npm."
-            # Force bump to specified version type
-            npm --no-git-tag-version version ${{ github.event.inputs.version }}
-            # Get the new version after bump
-            NEW_VERSION=$(node -p "require('./package.json').version")
-            # Update changelog
-            npm run changelog
-            # Stage changes
-            git add package.json package-lock.json CHANGELOG.md
-            # Commit changes with conventional format
-            git commit -m "chore(release): ${NEW_VERSION} [skip ci]"
-            # Create tag
-            git tag -a "v${NEW_VERSION}" -m "Release v${NEW_VERSION}"
-          else
-            # Version doesn't exist, regular bump
-            echo "Version ${CURRENT_VERSION} does not exist on npm."
-            npm version ${{ github.event.inputs.version }} -m "chore(release): %s [skip ci]"
-            NEW_VERSION=$(node -p "require('./package.json').version")
-          fi
-          
-          # Publish the version
-          echo "Publishing version ${NEW_VERSION}..."
-          npm publish
-          
-          # Push changes
-          git push origin HEAD:${GITHUB_REF#refs/heads/}
+          git push
           git push --tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,148 +1,91 @@
 # Publishing Guide for isbn-bisac-tools
 
-This document outlines the process for publishing new versions of `isbn-bisac-tools` to npm.
+This document describes how the automated release and publishing process works for `isbn-bisac-tools`.
 
-## Semantic Versioning
+## Fully Automated Workflow
 
-This package follows [Semantic Versioning](https://semver.org/) principles:
+This package uses a fully automated continuous deployment process that:
 
-- **PATCH version (1.0.x)** - for backwards-compatible bug fixes
-- **MINOR version (1.x.0)** - for new backwards-compatible functionality
-- **MAJOR version (x.0.0)** - for backwards-incompatible changes
+1. Monitors pushes to the `master` branch
+2. Analyzes commit messages to determine version bumps
+3. Updates the version in package.json
+4. Generates a new CHANGELOG entry
+5. Creates a git tag
+6. Releases to npm
 
-## Prerequisites
+## How Version Bumping Works
 
-Before publishing, ensure you have:
+The system follows [Semantic Versioning](https://semver.org/) and uses commit messages to determine which version number to increment:
 
-1. An [npm account](https://www.npmjs.com/signup)
-2. Been added as a collaborator to the package
-3. Logged in via the CLI: `npm login`
+- **MAJOR version (x.0.0)**: Incremented when a commit contains `BREAKING CHANGE:` or uses the `!:` notation (e.g., `feat!: change API`)
+- **MINOR version (1.x.0)**: Incremented when a commit starts with `feat:` or `feat(...):` 
+- **PATCH version (1.0.x)**: Incremented when a commit starts with `fix:` or for other changes (`chore:`, `docs:`, etc.)
 
-## Publishing Methods
+## Commit Message Convention
 
-### Method 1: Using the Helper Script (Recommended)
+To properly trigger version bumps, follow the [Conventional Commits](https://www.conventionalcommits.org/) format:
 
-The package includes a helper script that automates the publishing process.
+```
+<type>[optional scope]: <description>
 
-```bash
-# For a patch release (0.1.0 -> 0.1.1)
-npm run publish
+[optional body]
 
-# Specify version type explicitly
-npm run publish -- patch
-npm run publish -- minor
-npm run publish -- major
-
-# Or specify an exact version
-npm run publish -- 1.2.3
+[optional footer]
 ```
 
-This script will:
-1. Check for uncommitted changes
-2. Run tests and linting
-3. Update the version in package.json
-4. Update the CHANGELOG.md
-5. Build the package
-6. Commit the changes and create a git tag
-7. Publish to npm
-8. Push changes to GitHub
+Where `<type>` is one of:
+- `feat`: A new feature (triggers MINOR version bump)
+- `fix`: A bug fix (triggers PATCH version bump)
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code changes that neither fix bugs nor add features
+- `perf`: Performance improvements
+- `test`: Adding or fixing tests
+- `chore`: Changes to the build process, dependencies, etc.
 
-### Method 2: Using npm CLI Commands
+Breaking changes should either:
+- Include `BREAKING CHANGE:` in the commit body
+- Add a `!` after the type: `feat!:` or `fix!:`
 
-If you prefer manual control, use the provided npm scripts:
+## Release Process
 
-```bash
-# Patch version (0.1.0 -> 0.1.1)
-npm run release:patch
+When you push to `master`, the following happens automatically:
 
-# Minor version (0.1.0 -> 0.2.0)
-npm run release:minor
+1. GitHub Actions analyzes commits since the last tag
+2. If version-affecting commits are found, the workflow:
+   - Determines the appropriate version bump
+   - Updates package.json with the new version
+   - Updates the CHANGELOG
+   - Creates a git tag
+   - Builds the package
+   - Publishes to npm
+   - Pushes changes back to the repository
 
-# Major version (0.1.0 -> 1.0.0)
-npm run release:major
-```
+## Requirements
 
-### Method 3: Using GitHub Actions (Automated)
+For this automation to work correctly:
 
-You can trigger the publishing workflow from GitHub:
+1. The repository must have an `NPM_TOKEN` secret configured
+2. Commit messages must follow the conventional commit format
 
-1. Go to the GitHub repository
-2. Navigate to Actions > "Publish to npm"
-3. Click "Run workflow"
-4. Select the version type (patch, minor, or major)
-5. Click "Run workflow"
+## Manual Override (if needed)
 
-This requires setting up an NPM_TOKEN secret in your GitHub repository.
+In most cases, the automated process should work without intervention. However, if you need to manually control a release:
 
-## Manual Publishing Steps (Detailed)
-
-If you need to perform a completely manual publication:
-
-1. **Update the version**:
-   ```bash
-   npm version patch|minor|major
-   ```
-
-2. **Update CHANGELOG.md**:
-   - Move changes from "Unreleased" to a new version section
-   - Add the current date
-   - Update the comparison links at the bottom
-
-3. **Build the package**:
-   ```bash
-   npm run build
-   ```
-
-4. **Run tests and linting**:
-   ```bash
-   npm run lint
-   npm test
-   ```
-
-5. **Publish to npm**:
-   ```bash
-   npm publish
-   ```
-
-6. **Push changes and tags to GitHub**:
-   ```bash
-   git push && git push --tags
-   ```
-
-## Release Checklist
-
-Before publishing, ensure:
-
-- [ ] All tests pass
-- [ ] Code linting passes
-- [ ] Documentation is up-to-date
-- [ ] CHANGELOG.md is updated
-- [ ] Version number follows semantic versioning
-- [ ] Required Node.js version is correct
-
-## Post-Publishing
-
-After publishing, verify:
-
-1. The package is available on npm: `npm view isbn-bisac-tools`
-2. The package can be installed: `npm install -g isbn-bisac-tools`
-3. CLI commands work: `isbn-bisac-tools --help`
+1. Update the version in package.json
+2. Update the CHANGELOG.md
+3. Commit with message: `chore(release): x.x.x [skip ci]`
+4. Create a tag: `git tag -a vx.x.x -m "Release vx.x.x"`
+5. Push changes and tags: `git push && git push --tags`
 
 ## Troubleshooting
 
-### Common Issues
+If a release fails:
 
-1. **Permission errors**:
-   - Ensure you're logged in: `npm login`
-   - Verify you have publishing rights: `npm owner ls isbn-bisac-tools`
+1. Check the GitHub Actions logs for errors
+2. Verify that your NPM_TOKEN has not expired
+3. Check if the version already exists on npm
+4. Ensure commits follow the conventional format
+5. For breaking changes, make sure the format includes `BREAKING CHANGE:` or the `!:` notation
 
-2. **Package already exists**:
-   - Check if the version is already published: `npm view isbn-bisac-tools versions`
-
-3. **Failed tests or linting**:
-   - Fix issues before attempting to publish
-
-4. **Tarball creation failures**:
-   - Check the `.npmignore` file for potential conflicts
-
-For additional help, contact the package maintainers or refer to the [npm documentation](https://docs.npmjs.com/cli/v8/commands/npm-publish).
+For additional help, refer to the [GitHub Actions documentation](https://docs.github.com/en/actions) or contact the package maintainers.
