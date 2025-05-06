@@ -3,6 +3,7 @@
  */
 
 import { promises as fs } from 'fs';
+import * as fsSync from 'fs';
 import * as path from 'path';
 import { Page } from 'puppeteer';
 import { exec, spawn } from 'child_process';
@@ -251,10 +252,40 @@ export async function getLatestJsonFilePath(
 export async function loadBisacData(filePath?: string): Promise<Category[]> {
   try {
     // If no file path provided, get the latest one
-    const resolvedPath = filePath || (await getLatestJsonFilePath());
+    let resolvedPath = filePath;
 
     if (!resolvedPath) {
-      throw new Error('No BISAC data file found');
+      try {
+        resolvedPath = await getLatestJsonFilePath();
+      } catch (pathError) {
+        // Try to find the data file in the module directory
+        try {
+          const moduleDir = new URL('.', import.meta.url).pathname;
+          const dataPath = path.resolve(moduleDir, '..', '..', 'data', 'bisac-data.json');
+
+          if (fsSync.existsSync(dataPath)) {
+            resolvedPath = dataPath;
+            console.log(`📂 Using bundled BISAC data file: ${dataPath}`);
+          }
+        } catch (modulePathError) {
+          console.error(`⚠️ Could not locate module path: ${(modulePathError as Error).message}`);
+        }
+
+        // If still not found, check current working directory
+        if (!resolvedPath) {
+          const cwdDataPath = path.join(process.cwd(), 'data', 'bisac-data.json');
+          if (fsSync.existsSync(cwdDataPath)) {
+            resolvedPath = cwdDataPath;
+            console.log(`📂 Using BISAC data file from current directory: ${cwdDataPath}`);
+          }
+        }
+      }
+    }
+
+    if (!resolvedPath) {
+      throw new Error(
+        'No BISAC data file found. Try running with --scrape to generate the data first.'
+      );
     }
 
     const data = await fs.readFile(resolvedPath, 'utf-8');

@@ -8,7 +8,7 @@
 
 import puppeteer, { Browser, Page } from 'puppeteer';
 import * as path from 'path';
-import * as fs from 'fs';
+import * as fsSync from 'fs';
 import { readFileSync } from 'fs';
 import * as utils from '../lib/utils.js';
 import { ScraperConfig, Category } from './types/index.js';
@@ -118,10 +118,18 @@ const CONFIG: ScraperConfig = {
   // Screenshot flag
   takeScreenshots: false,
   // Output paths
-  outputDir: path.join(process.cwd(), 'data'),
+  outputDir: (() => {
+    // Get the directory where the module is installed
+    const moduleDir = new URL('.', import.meta.url).pathname;
+    // For development, use local directory, for production use installed package
+    return path.resolve(moduleDir, '..', 'data');
+  })(),
   // Default data file location
   get jsonPath() {
-    return path.join(process.cwd(), 'data/bisac-data.json');
+    // Get the directory where the module is installed
+    const moduleDir = new URL('.', import.meta.url).pathname;
+    // For development, use local directory, for production use installed package
+    return path.resolve(moduleDir, '..', 'data', 'bisac-data.json');
   },
   screenshotsDir: path.join(process.cwd(), 'screenshots'),
   // Delay between page visits to avoid overloading the server
@@ -757,22 +765,46 @@ if (
 
         // Check if the file exists
         let actualFilePath = dataFilePath;
-        if (!fs.existsSync(dataFilePath)) {
+        if (!fsSync.existsSync(dataFilePath)) {
           console.log(`⚠️ BISAC data file not found: ${dataFilePath}`);
           console.log('🔍 Looking for alternative data files...');
 
           try {
-            const files = fs
-              .readdirSync(CONFIG.outputDir)
-              .filter((file: string) => file.endsWith('.json') && file.includes('bisac-data'))
-              .sort()
-              .reverse();
+            // First check in the package directory
+            if (fsSync.existsSync(CONFIG.outputDir)) {
+              const files = fsSync
+                .readdirSync(CONFIG.outputDir)
+                .filter((file: string) => file.endsWith('.json') && file.includes('bisac-data'))
+                .sort()
+                .reverse();
 
-            if (files.length > 0) {
-              actualFilePath = path.join(CONFIG.outputDir, files[0]);
-              console.log(`✅ Using data file: ${actualFilePath}`);
+              if (files.length > 0) {
+                actualFilePath = path.join(CONFIG.outputDir, files[0]);
+                console.log(`✅ Using data file: ${actualFilePath}`);
+              } else {
+                // Also check in the current working directory as fallback
+                const cwdOutputDir = path.join(process.cwd(), 'data');
+                if (fsSync.existsSync(cwdOutputDir)) {
+                  const cwdFiles = fsSync
+                    .readdirSync(cwdOutputDir)
+                    .filter((file: string) => file.endsWith('.json') && file.includes('bisac-data'))
+                    .sort()
+                    .reverse();
+
+                  if (cwdFiles.length > 0) {
+                    actualFilePath = path.join(cwdOutputDir, cwdFiles[0]);
+                    console.log(`✅ Using data file from current directory: ${actualFilePath}`);
+                  } else {
+                    console.error('❌ No BISAC data files found. Please run the scraper first.');
+                    process.exit(1);
+                  }
+                } else {
+                  console.error('❌ No BISAC data files found. Please run the scraper first.');
+                  process.exit(1);
+                }
+              }
             } else {
-              console.error('❌ No BISAC data files found. Please run the scraper first.');
+              console.error('❌ Data directory not found. Please run the scraper first.');
               process.exit(1);
             }
           } catch (error) {
@@ -899,7 +931,7 @@ if (
       }
 
       // Check if we're going to overwrite the default data file
-      const defaultDataExists = fs.existsSync(CONFIG.jsonPath);
+      const defaultDataExists = fsSync.existsSync(CONFIG.jsonPath);
       if (defaultDataExists) {
         console.log(
           `⚠️ This will overwrite the default BISAC data file: ${path.basename(CONFIG.jsonPath)}`
