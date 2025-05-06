@@ -11,6 +11,10 @@ vi.mock('fs', () => ({
     writeFile: vi.fn().mockResolvedValue(undefined),
     readFile: vi.fn(),
     access: vi.fn(),
+    stat: vi.fn().mockResolvedValue({
+      mtime: new Date('2023-01-01T00:00:00Z'),
+    }),
+    copyFile: vi.fn().mockResolvedValue(undefined),
   },
 }));
 
@@ -103,29 +107,16 @@ describe('BISAC JSON Comparison Features', () => {
       expect(fs.access).toHaveBeenCalledTimes(1);
     });
 
-    it('should return file path if file for today exists', async () => {
+    it('should return file path if file exists', async () => {
       // Mock fs.access to resolve (file exists)
       vi.mocked(fs.access).mockResolvedValueOnce(undefined);
 
-      // Use fake timers to control the date
-      vi.useFakeTimers();
-      const mockDate = new Date('2023-05-15T12:00:00Z');
-      vi.setSystemTime(mockDate);
-
-      // Get the exact date string as it would be formatted in the function
-      const year = mockDate.getFullYear();
-      const month = String(mockDate.getMonth() + 1).padStart(2, '0');
-      const day = String(mockDate.getDate()).padStart(2, '0');
-      const todayStr = `${year}-${month}-${day}`;
-
-      const expectedPath = path.join('/test/output', `bisac-subjects-${todayStr}.json`);
+      const expectedPath = path.join('/test/output', 'bisac-data.json');
       const result = await utils.checkExistingJsonFileForToday('/test/output');
 
       expect(result).toBe(expectedPath);
       expect(fs.access).toHaveBeenCalledTimes(1);
       expect(fs.access).toHaveBeenCalledWith(expectedPath);
-
-      vi.useRealTimers();
     });
   });
 
@@ -137,8 +128,8 @@ describe('BISAC JSON Comparison Features', () => {
         .mockResolvedValueOnce(JSON.stringify(newData));
 
       const result = await utils.compareBisacJsonFiles(
-        '/test/output/bisac-subjects-2023-01-01.json',
-        '/test/output/bisac-subjects-2023-02-01.json'
+        '/test/output/bisac-data-backup-2023-01-01.json',
+        '/test/output/bisac-data.json'
       );
 
       // Check that readFile was called to load the files
@@ -211,8 +202,8 @@ describe('BISAC JSON Comparison Features', () => {
     it('should print a formatted comparison report', async () => {
       // Create a mock comparison result
       const mockComparison = {
-        oldFilePath: '/test/output/bisac-subjects-2023-01-01.json',
-        newFilePath: '/test/output/bisac-subjects-2023-02-01.json',
+        oldFilePath: '/test/output/bisac-data-backup-2023-01-01.json',
+        newFilePath: '/test/output/bisac-data.json',
         oldDate: '2023-01-01',
         newDate: '2023-02-01',
         summary: {
@@ -265,7 +256,7 @@ describe('BISAC JSON Comparison Features', () => {
     it('should handle the case of having fewer than 2 files', async () => {
       // Mock glob to return fewer than 2 files
       const { glob } = await import('glob');
-      vi.mocked(glob).mockResolvedValueOnce(['/test/output/bisac-subjects-2023-01-01.json']);
+      vi.mocked(glob).mockResolvedValueOnce(['/test/output/bisac-data-backup-2023-01-01.json']);
 
       const result = await utils.selectFilesForComparison('/test/output');
 
@@ -279,22 +270,22 @@ describe('BISAC JSON Comparison Features', () => {
       // Mock glob to return multiple files
       const { glob } = await import('glob');
       vi.mocked(glob).mockResolvedValueOnce([
-        '/test/output/bisac-subjects-2023-01-01.json',
-        '/test/output/bisac-subjects-2023-02-01.json',
-        '/test/output/bisac-subjects-2023-03-01.json',
+        '/test/output/bisac-data-backup-2023-01-01.json',
+        '/test/output/bisac-data-backup-2023-02-01.json',
+        '/test/output/bisac-data.json',
       ]);
 
       // Mock inquirer.prompt to return selected files
       const { default: inquirer } = await import('inquirer');
       vi.mocked(inquirer.prompt)
-        .mockResolvedValueOnce({ newerFile: '/test/output/bisac-subjects-2023-03-01.json' })
-        .mockResolvedValueOnce({ olderFile: '/test/output/bisac-subjects-2023-01-01.json' });
+        .mockResolvedValueOnce({ newerFile: '/test/output/bisac-data.json' })
+        .mockResolvedValueOnce({ olderFile: '/test/output/bisac-data-backup-2023-01-01.json' });
 
       const result = await utils.selectFilesForComparison('/test/output');
 
       expect(result).toEqual({
-        newerFile: '/test/output/bisac-subjects-2023-03-01.json',
-        olderFile: '/test/output/bisac-subjects-2023-01-01.json',
+        newerFile: '/test/output/bisac-data.json',
+        olderFile: '/test/output/bisac-data-backup-2023-01-01.json',
       });
       expect(inquirer.prompt).toHaveBeenCalledTimes(2);
     });

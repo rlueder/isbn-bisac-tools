@@ -30,10 +30,28 @@ vi.mock('../lib/utils.js', () => ({
   takeScreenshot: vi.fn().mockResolvedValue('screenshot.png'),
   saveToJSON: vi.fn().mockResolvedValue(undefined),
   randomDelay: vi.fn().mockResolvedValue(undefined),
+  checkExistingJsonFileForToday: vi.fn().mockResolvedValue(undefined),
+  createBackupOfBisacData: vi.fn().mockResolvedValue('/test/output/bisac-data-backup.json'),
 }));
 
 vi.mock('../src/browse-json.js', () => ({
   browseJsonFiles: vi.fn().mockResolvedValue(true),
+}));
+
+// Mock fs for file access
+vi.mock('fs', () => ({
+  promises: {
+    mkdir: vi.fn().mockResolvedValue(undefined),
+    writeFile: vi.fn().mockResolvedValue(undefined),
+    readFile: vi.fn().mockResolvedValue('[]'),
+    access: vi.fn().mockResolvedValue(undefined),
+    stat: vi.fn().mockResolvedValue({
+      mtime: new Date('2023-01-01T00:00:00Z'),
+    }),
+    copyFile: vi.fn().mockResolvedValue(undefined),
+  },
+  existsSync: vi.fn().mockReturnValue(true),
+  readdirSync: vi.fn().mockReturnValue(['bisac-data.json']),
 }));
 
 describe('Main Scraper Functionality', () => {

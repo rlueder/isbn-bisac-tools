@@ -29,8 +29,19 @@ async function browseJsonFiles(customOutputDir?: string): Promise<boolean> {
     // Ensure the output directory exists
     await fs.mkdir(targetDir, { recursive: true });
 
-    // Find all JSON files
-    const files = await glob(`${targetDir}/*.json`);
+    // Find all JSON files, prioritizing bisac-data.json if it exists
+    const bisacDataPath = path.join(targetDir, 'bisac-data.json');
+    let bisacDataExists = false;
+
+    try {
+      await fs.access(bisacDataPath);
+      bisacDataExists = true;
+    } catch {
+      // File doesn't exist, will search for other JSON files
+    }
+
+    // If bisac-data.json exists, use only that, otherwise find all JSON files
+    const files = bisacDataExists ? [bisacDataPath] : await glob(`${targetDir}/*.json`);
 
     if (files.length === 0) {
       console.error(chalk.red('❌ No JSON files found in the output directory'));
@@ -52,12 +63,32 @@ async function browseJsonFiles(customOutputDir?: string): Promise<boolean> {
     const sortedFiles = fileStats.sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
 
     // Format choices for display
-    const fileChoices = sortedFiles.map(file => {
-      return {
-        name: `${path.basename(file.path)} (${file.mtime.toLocaleDateString()} ${file.mtime.toLocaleTimeString()})`,
-        value: file.path,
-      };
-    });
+    const fileChoices = await Promise.all(
+      sortedFiles.map(async file => {
+        // Try to read the file to check if it's the new format with timestamp
+        try {
+          const content = await fs.readFile(file.path, 'utf8');
+          const data = JSON.parse(content);
+
+          // If it's the new format with metadata
+          if (data.timestamp && data.date) {
+            const date = new Date(data.timestamp);
+            return {
+              name: `${path.basename(file.path)} (From: ${data.date}, Generated: ${date.toLocaleTimeString()})`,
+              value: file.path,
+            };
+          }
+        } catch {
+          // If parsing fails, fall back to using file stats
+        }
+
+        // Default to using file stats for display
+        return {
+          name: `${path.basename(file.path)} (${file.mtime.toLocaleDateString()} ${file.mtime.toLocaleTimeString()})`,
+          value: file.path,
+        };
+      })
+    );
 
     // Prompt for file selection
     const { selectedFile } = await inquirer.prompt<{ selectedFile: string }>([
@@ -74,6 +105,27 @@ async function browseJsonFiles(customOutputDir?: string): Promise<boolean> {
 
     // Read the file content
     const fileContent = await fs.readFile(selectedFile, 'utf8');
+    const jsonData = JSON.parse(fileContent);
+
+    // For new format with categories, use the categories array for display
+    // Otherwise use the original content
+    const displayContent = jsonData.categories
+      ? JSON.stringify(
+          {
+            ...jsonData,
+            // Display first 3 categories in preview, with count of total
+            categories:
+              jsonData.categories.length > 3
+                ? [
+                    ...jsonData.categories.slice(0, 3),
+                    `... ${jsonData.categories.length - 3} more categories`,
+                  ]
+                : jsonData.categories,
+          },
+          null,
+          2
+        )
+      : fileContent;
 
     // Use spawn to open fx with the selected file
     const fx = spawn('npx', ['fx'], {
@@ -81,8 +133,8 @@ async function browseJsonFiles(customOutputDir?: string): Promise<boolean> {
       cwd: process.cwd(),
     });
 
-    // Write the file content to fx's stdin
-    fx.stdin?.write(fileContent);
+    // Write the processed content to fx's stdin
+    fx.stdin?.write(displayContent);
     fx.stdin?.end();
 
     // Handle process completion

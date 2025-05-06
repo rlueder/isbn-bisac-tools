@@ -63,3 +63,15 @@ export interface Category {
   /** Subjects within the category */
   subjects: Subject[];
 }
+
+/**
+ * BISAC data structure with metadata
+ */
+export interface BisacData {
+  /** Timestamp when the data was generated (milliseconds since epoch) */
+  timestamp: number;
+  /** Human readable date when the data was generated (YYYY-MM-DD) */
+  date: string;
+  /** List of categories with subjects */
+  categories: Category[];
+}

@@ -120,11 +120,7 @@ const CONFIG: ScraperConfig = {
   outputDir: path.join(process.cwd(), 'output'),
   // Generate filename with date format YYYY-MM-DD
   get jsonPath() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    return path.join(process.cwd(), `output/bisac-subjects-${year}-${month}-${day}.json`);
+    return path.join(process.cwd(), 'output/bisac-data.json');
   },
   screenshotsDir: path.join(process.cwd(), 'screenshots'),
   // Delay between page visits to avoid overloading the server
@@ -473,6 +469,16 @@ async function scrape(
         const savingSpinner = ora(
           `Saving ${allCategoryData.length} categories to JSON file...`
         ).start();
+
+        // Create a backup of the existing data file if it exists
+        const existingFile = await utils.checkExistingJsonFileForToday(config.outputDir);
+        if (existingFile) {
+          savingSpinner.text = 'Creating backup of existing BISAC data file...';
+          await utils.createBackupOfBisacData(config.outputDir);
+        }
+
+        // Save new data
+        savingSpinner.text = `Saving ${allCategoryData.length} categories to JSON file...`;
         await utils.saveToJSON(config.jsonPath, allCategoryData);
         savingSpinner.succeed(
           `Successfully scraped ${chalk.green(allCategoryData.length)} category pages! 🎉`
@@ -644,7 +650,7 @@ Lookup Options:
   -i, --isbn <isbn>      Get BISAC code(s) for a book with the given ISBN (e.g., "9781234567890")
 
 Analysis Options:
-  --compare              Compare two BISAC JSON files to identify changes between versions
+  --compare              Compare bisac-data.json with a backup to identify changes between versions
 
 Flexible Matching:
   The lookup utilities support flexible matching:
@@ -665,11 +671,11 @@ Examples:
   npm start -- --heading "FICTION"      # Get all codes for the FICTION heading
   npm start -- --isbn 9781234567890     # Get BISAC code(s) for a book with ISBN 9781234567890
   npm start -- --label "FICTION / War & Military"  # Get code for the given label
-  npm start -- --compare                # Compare two BISAC JSON files to identify changes
+  npm start -- --compare                # Compare current bisac-data.json with a backup file
 
 Note:
-  The scraper output will be saved to output/bisac-subjects-YYYY-MM-DD.json
-  with the current date. Lookup operations use this file for reference.
+  The scraper output will be saved to output/bisac-data.json.
+  Lookup operations use this file for reference.
 `);
 }
 
@@ -702,22 +708,19 @@ if (
 
       // Handle lookup operations
       if (lookupMode) {
-        // Get the current date in YYYY-MM-DD format for the default JSON path
-        const today = new Date().toISOString().split('T')[0];
-        const dataFilePath = path.join(CONFIG.outputDir, `bisac-subjects-${today}.json`);
+        // Use the fixed filename for the data file
+        const dataFilePath = path.join(CONFIG.outputDir, 'bisac-data.json');
 
-        // If the exact file doesn't exist, find the most recent one
+        // Check if the file exists
         let actualFilePath = dataFilePath;
         if (!fs.existsSync(dataFilePath)) {
-          console.log(`⚠️ Default data file not found: ${dataFilePath}`);
-          console.log('🔍 Looking for the most recent data file...');
+          console.log(`⚠️ BISAC data file not found: ${dataFilePath}`);
+          console.log('🔍 Looking for alternative data files...');
 
           try {
             const files = fs
               .readdirSync(CONFIG.outputDir)
-              .filter(
-                (file: string) => file.startsWith('bisac-subjects-') && file.endsWith('.json')
-              )
+              .filter((file: string) => file.endsWith('.json') && file.includes('bisac-data'))
               .sort()
               .reverse();
 

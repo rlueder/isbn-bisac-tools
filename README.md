@@ -297,7 +297,7 @@ Compares two BISAC JSON files to identify changes.
 
 The script generates:
 
-- JSON file: `./output/bisac-subjects-YYYY-MM-DD.json`
+- JSON file: `./output/bisac-data.json`
 - Screenshots: `./screenshots/` directory (for debugging)
 - Console output: Progress information and statistics
 
