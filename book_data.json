@@ -1,0 +1,80 @@
+{
+  "kind": "books#volumes",
+  "totalItems": 1,
+  "items": [
+    {
+      "kind": "books#volume",
+      "id": "e8BHEAAAQBAJ",
+      "etag": "onjrvRdgB9s",
+      "selfLink": "https://www.googleapis.com/books/v1/volumes/e8BHEAAAQBAJ",
+      "volumeInfo": {
+        "title": "All of the Marvels",
+        "subtitle": "A Journey to the Ends of the Biggest Story Ever Told",
+        "authors": [
+          "Douglas Wolk"
+        ],
+        "publisher": "Penguin",
+        "publishedDate": "2021-10-12",
+        "description": "Winner of the 2022 Eisner Award for Best Comics-Related Book A New York Times Book Review Editor's Choice The first-ever full reckoning with Marvel Comics’ interconnected, half-million-page story, a revelatory guide to the “epic of epics”—and to the past sixty years of American culture—from a beloved authority on the subject who read all 27,000+ Marvel superhero comics and lived to tell the tale “Thorough, fascinating, and joyfully executed, All of the Marvels is essential reading for fans and scholars alike.” —G. Willow Wilson (Ms. Marvel) “A revelation, a tour both electrifying in its weird charisma and replenishing in its loving specificity . . . a testament, and a tribute.” —Jonathan Lethem “Brilliant, eccentric, moving and wholly wonderful. . . . Wolk proves to be the perfect guide for this type of adventure: nimble, learned, funny and sincere. . . . All of the Marvels is magnificently marvelous. Wolk’s work will invite many more alliterative superlatives. It deserves them all.” —Junot Díaz, New York Times Book Review The superhero comic books that Marvel Comics has published since 1961are the longest continuous, self-contained work of fiction ever created. Thousands of writers and artists have contributed to it. Everyone recognizes its protagonists. Eighteen of the hundred highest-grossing movies of all time are based on parts of it. And Douglas Wolk has read the whole thing. Wolk sees both into the ever-expanding story and through it, as a prism through which to view the landscape of American culture. In his hands, the mammoth Marvel narrative becomes a fun-house-mirror history of the past sixty years—a boisterous, tragicomic, magnificently filigreed epic about power and ethics, set in a world transformed by wonders. A huge treat for Marvel fans, this book is also a revelation for readers who don’t know Doctor Strange from Doctor Doom. Here, truly, are all of the marvels.",
+        "industryIdentifiers": [
+          {
+            "type": "ISBN_13",
+            "identifier": "9780735222168"
+          },
+          {
+            "type": "ISBN_10",
+            "identifier": "0735222169"
+          }
+        ],
+        "readingModes": {
+          "text": false,
+          "image": false
+        },
+        "pageCount": 385,
+        "printType": "BOOK",
+        "categories": [
+          "Literary Criticism"
+        ],
+        "maturityRating": "NOT_MATURE",
+        "allowAnonLogging": false,
+        "contentVersion": "0.3.0.0.preview.0",
+        "panelizationSummary": {
+          "containsEpubBubbles": false,
+          "containsImageBubbles": false
+        },
+        "imageLinks": {
+          "smallThumbnail": "http://books.google.com/books/content?id=e8BHEAAAQBAJ&printsec=frontcover&img=1&zoom=5&edge=curl&source=gbs_api",
+          "thumbnail": "http://books.google.com/books/content?id=e8BHEAAAQBAJ&printsec=frontcover&img=1&zoom=1&edge=curl&source=gbs_api"
+        },
+        "language": "en",
+        "previewLink": "http://books.google.com/books?id=e8BHEAAAQBAJ&printsec=frontcover&dq=isbn:9780735222168&hl=&cd=1&source=gbs_api",
+        "infoLink": "http://books.google.com/books?id=e8BHEAAAQBAJ&dq=isbn:9780735222168&hl=&source=gbs_api",
+        "canonicalVolumeLink": "https://books.google.com/books/about/All_of_the_Marvels.html?hl=&id=e8BHEAAAQBAJ"
+      },
+      "saleInfo": {
+        "country": "US",
+        "saleability": "NOT_FOR_SALE",
+        "isEbook": false
+      },
+      "accessInfo": {
+        "country": "US",
+        "viewability": "PARTIAL",
+        "embeddable": true,
+        "publicDomain": false,
+        "textToSpeechPermission": "ALLOWED",
+        "epub": {
+          "isAvailable": false
+        },
+        "pdf": {
+          "isAvailable": false
+        },
+        "webReaderLink": "http://play.google.com/books/reader?id=e8BHEAAAQBAJ&hl=&source=gbs_api",
+        "accessViewStatus": "SAMPLE",
+        "quoteSharingAllowed": false
+      },
+      "searchInfo": {
+        "textSnippet": "A huge treat for Marvel fans, this book is also a revelation for readers who don’t know Doctor Strange from Doctor Doom. Here, truly, are all of the marvels."
+      }
+    }
+  ]
+}
