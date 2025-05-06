@@ -1,3 +1,10 @@
+## <small>0.2.1 (2025-05-06)</small>
+
+* feat: add version command ([ba55c3e](https://github.com/yourusername/isbn-bisac-tools/commit/ba55c3e))
+* refactor: use bisac-data.json for output ([9d02e07](https://github.com/yourusername/isbn-bisac-tools/commit/9d02e07))
+* chore: fix lint errors ([a1954b0](https://github.com/yourusername/isbn-bisac-tools/commit/a1954b0))
+* chore: improve error messages ([84e1310](https://github.com/yourusername/isbn-bisac-tools/commit/84e1310))
+
 ## <small>0.1.4 (2025-05-06)</small>
 
 * 0.1.3 ([344e3f5](https://github.com/yourusername/isbn-bisac-tools/commit/344e3f5))
