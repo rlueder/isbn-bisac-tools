@@ -743,6 +743,15 @@ if (
             console.log(`✅ Found: ${fullLabel}`);
           } else {
             console.log(`❌ No label found for code: ${code}`);
+            console.log(
+              `   This may be because the code doesn't exist or isn't in the current dataset.`
+            );
+            if (categoryUrl) {
+              console.log(`   You're currently using data from: ${categoryUrl}`);
+              console.log(
+                `   Try using a different URL or run without --url to use the complete dataset.`
+              );
+            }
           }
           process.exit(0);
         }

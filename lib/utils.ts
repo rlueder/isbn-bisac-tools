@@ -290,6 +290,12 @@ export async function getFullLabelFromCode(
   }
 
   console.log(`🔍 No label found for code: ${code}`);
+  console.log(
+    `ℹ️ Note: This code may exist in the complete BISAC dataset but is not available in the current data.`
+  );
+  console.log(
+    `ℹ️ If you used --url to fetch a specific category, try using a different category URL or fetch the full dataset.`
+  );
   return undefined;
 }
 
