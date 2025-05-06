@@ -1,3 +1,14 @@
+## <small>0.1.3 (2025-05-06)</small>
+
+* fix: update CLI entry point for global installation ([0d1cf5d](https://github.com/yourusername/isbn-bisac-tools/commit/0d1cf5d))
+* docs: update README ([c74aca7](https://github.com/yourusername/isbn-bisac-tools/commit/c74aca7))
+* docs: update README ([5f5aa04](https://github.com/yourusername/isbn-bisac-tools/commit/5f5aa04))
+* chore: formatting ([989f74d](https://github.com/yourusername/isbn-bisac-tools/commit/989f74d))
+* chore: initial commit ([c5fb329](https://github.com/yourusername/isbn-bisac-tools/commit/c5fb329))
+* chore: npm publishing setup ([da14e50](https://github.com/yourusername/isbn-bisac-tools/commit/da14e50))
+
+
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
