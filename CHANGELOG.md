@@ -1,3 +1,15 @@
+## <small>0.2.5 (2025-05-06)</small>
+
+* fix: make sure data path is available ([55ffd32](https://github.com/yourusername/isbn-bisac-tools/commit/55ffd32))
+
+
+
+## <small>0.2.5 (2025-05-06)</small>
+
+* fix: make sure data path is available ([55ffd32](https://github.com/yourusername/isbn-bisac-tools/commit/55ffd32))
+
+
+
 ## <small>0.2.4 (2025-05-06)</small>
 
 * fix: ship with bisac-data.json ([5353f16](https://github.com/yourusername/isbn-bisac-tools/commit/5353f16))
