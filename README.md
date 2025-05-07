@@ -205,6 +205,61 @@ const comparison = await compareBisacJsonFiles('./older-file.json', './newer-fil
 console.log(`Found ${comparison.summary.newSubjects} new subjects`);
 ```
 
+### Code Lookup
+
+The code lookup utility retrieves the full label for a BISAC code.
+
+```
+isbn-bisac-tools --code ANT007000
+```
+
+Sample output:
+```
+🔍 Looking up full label for code: ANT007000
+📅 Loaded BISAC data from 2025-05-06 (timestamp: 1746569281258)
+✅ Found: Antiques & Collectibles / Buttons & Pins
+```
+
+### Heading Lookup
+
+The heading lookup utility retrieves all BISAC codes and labels for a specific category heading.
+
+```
+isbn-bisac-tools --heading "FICTION"
+```
+
+Sample output (abbreviated):
+```
+🔍 Looking up codes for heading: FICTION
+📅 Loaded BISAC data from 2025-05-06 (timestamp: 1746569281258)
+✅ Found 394 results:
+┌─────────┬─────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│ (index) │ code        │ fullLabel                                                                                          │
+├─────────┼─────────────┼────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ 0       │ 'FIC000000' │ 'Fiction / General'                                                                                │
+│ 1       │ 'FIC064000' │ 'Fiction / Absurdist'                                                                              │
+│ 2       │ 'FIC002000' │ 'Fiction / Action & Adventure'                                                                     │
+│ 3       │ 'FIC075000' │ 'Fiction / Adaptations & Pastiche'                                                                 │
+│ ...     │ ...         │ ...                                                                                                │
+│ 393     │ 'FIC077100' │ 'Fiction / World Literature / Russian & Soviet Union'                                              │
+└─────────┴─────────────┴────────────────────────────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Label Lookup
+
+The label lookup utility finds the BISAC code corresponding to a specific label.
+
+```
+isbn-bisac-tools --label "FICTION / War & Military"
+```
+
+Sample output:
+```
+🔍 Looking up code for label: FICTION / War & Military
+📅 Loaded BISAC data from 2025-05-06 (timestamp: 1746569281258)
+✅ Found: FIC032000
+```
+
 ### ISBN to BISAC Conversion
 
 The ISBN to BISAC conversion utility looks up BISAC codes for any book using its ISBN-10 or ISBN-13.
@@ -236,6 +291,16 @@ The system intelligently identifies the most relevant BISAC code using a smart r
 2. Performs content analysis of book descriptions
 3. Evaluates contextual relevance
 4. Applies special pattern recognition
+
+### Comparison Tool
+
+The comparison tool identifies changes between different versions of BISAC data JSON files.
+
+```
+isbn-bisac-tools --compare
+```
+
+When you have multiple backup files available, you'll be prompted to select which files to compare. The tool produces a detailed report of added, removed, and modified subjects.
 
 ### Utility Commands
 
