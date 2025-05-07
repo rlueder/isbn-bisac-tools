@@ -1,6 +1,6 @@
 # isbn-bisac-tools
 
-[![npm version](https://img.shields.io/badge/npm-v1.0.0-blue.svg)](https://www.npmjs.com/package/isbn-bisac-tools)
+[![npm version](https://img.shields.io/npm/v/isbn-bisac-tools.svg)](https://www.npmjs.com/package/isbn-bisac-tools)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Node.js >=18.0.0](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/en/download/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](https://www.typescriptlang.org/)
