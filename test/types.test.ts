@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { ScraperConfig, Subject, Category } from '../src/types/index.js';
+import { ScraperConfig, Subject, Category, BisacData } from '../src/types/index.js';
 
 describe('BISAC Types', () => {
   describe('ScraperConfig', () => {
@@ -139,6 +139,45 @@ describe('BISAC Types', () => {
       expect(categories[0].subjects[1].code).toBe('FIC001000');
       expect(categories[1].notes).toHaveLength(2);
       expect(categories[1].subjects[1].label).toBe('BUSINESS & ECONOMICS / Accounting');
+    });
+  });
+
+  describe('BisacData', () => {
+    it('should validate correct BisacData object', () => {
+      const validBisacData: BisacData = {
+        timestamp: 1684948800000, // Example timestamp (May 24, 2023)
+        date: '2023-05-24',
+        categories: [
+          {
+            heading: 'FICTION',
+            notes: ['Fiction category note'],
+            subjects: [
+              { code: 'FIC000000', label: 'FICTION / General' },
+              { code: 'FIC001000', label: 'FICTION / Action & Adventure' },
+            ],
+          },
+        ],
+      };
+
+      expect(validBisacData).toBeDefined();
+      expect(validBisacData.timestamp).toBe(1684948800000);
+      expect(validBisacData.date).toBe('2023-05-24');
+      expect(validBisacData.categories).toHaveLength(1);
+      expect(validBisacData.categories[0].heading).toBe('FICTION');
+      expect(validBisacData.categories[0].subjects).toHaveLength(2);
+    });
+
+    it('should validate BisacData with empty categories array', () => {
+      const emptyBisacData: BisacData = {
+        timestamp: 1684948800000,
+        date: '2023-05-24',
+        categories: [],
+      };
+
+      expect(emptyBisacData).toBeDefined();
+      expect(emptyBisacData.timestamp).toBe(1684948800000);
+      expect(emptyBisacData.date).toBe('2023-05-24');
+      expect(emptyBisacData.categories).toHaveLength(0);
     });
   });
 });
