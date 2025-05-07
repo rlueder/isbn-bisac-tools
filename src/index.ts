@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * ISBN-BISAC Tools - Utilities for working with BISAC codes and ISBN lookups
  *
