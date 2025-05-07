@@ -16,7 +16,7 @@
   "scripts": {
     "browse:json": "tsx src/browse-json.ts",
     "build": "npm run clean && npx tsc -p tsconfig.build.json --listEmittedFiles",
-    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
+    "changelog": "conventional-changelog -p angular -i CHANGELOG.md -r 1",
     "changelog:first": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
     "clean": "rm -rf dist",
     "commit": "git-cz",

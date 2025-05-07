@@ -1,40 +1,17 @@
-## <small>0.2.5 (2025-05-06)</small>
-
-* fix: make sure data path is available ([55ffd32](https://github.com/yourusername/isbn-bisac-tools/commit/55ffd32))
-
-
+# Changelog
 
 ## <small>0.2.5 (2025-05-06)</small>
 
 * fix: make sure data path is available ([55ffd32](https://github.com/yourusername/isbn-bisac-tools/commit/55ffd32))
 
-
-
 ## <small>0.2.4 (2025-05-06)</small>
 
 * fix: ship with bisac-data.json ([5353f16](https://github.com/yourusername/isbn-bisac-tools/commit/5353f16))
-
-
-
-## <small>0.2.4 (2025-05-06)</small>
-
-* fix: ship with bisac-data.json ([5353f16](https://github.com/yourusername/isbn-bisac-tools/commit/5353f16))
-
-
 
 ## <small>0.2.3 (2025-05-06)</small>
 
 * chore: update publishing workflow ([81ce48a](https://github.com/yourusername/isbn-bisac-tools/commit/81ce48a))
 * fix: issue with --version command ([016c415](https://github.com/yourusername/isbn-bisac-tools/commit/016c415))
-
-
-
-## <small>0.2.3 (2025-05-06)</small>
-
-* chore: update publishing workflow ([81ce48a](https://github.com/yourusername/isbn-bisac-tools/commit/81ce48a))
-* fix: issue with --version command ([016c415](https://github.com/yourusername/isbn-bisac-tools/commit/016c415))
-
-
 
 ## <small>0.2.2 (2025-05-06)</small>
 
@@ -51,8 +28,6 @@
 * fix: update CLI entry point for global installation ([0d1cf5d](https://github.com/yourusername/isbn-bisac-tools/commit/0d1cf5d))
 * docs: update README ([c74aca7](https://github.com/yourusername/isbn-bisac-tools/commit/c74aca7))
 * docs: update README ([5f5aa04](https://github.com/yourusername/isbn-bisac-tools/commit/5f5aa04))
-
-
 
 ## <small>0.2.1 (2025-05-06)</small>
 
@@ -71,8 +46,6 @@
 * chore: initial commit ([c5fb329](https://github.com/yourusername/isbn-bisac-tools/commit/c5fb329))
 * chore: npm publishing setup ([da14e50](https://github.com/yourusername/isbn-bisac-tools/commit/da14e50))
 
-
-
 ## <small>0.1.3 (2025-05-06)</small>
 
 * fix: update CLI entry point for global installation ([0d1cf5d](https://github.com/yourusername/isbn-bisac-tools/commit/0d1cf5d))
@@ -82,18 +55,7 @@
 * chore: initial commit ([c5fb329](https://github.com/yourusername/isbn-bisac-tools/commit/c5fb329))
 * chore: npm publishing setup ([da14e50](https://github.com/yourusername/isbn-bisac-tools/commit/da14e50))
 
-
-
-# Changelog
-
-All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unreleased]
-
-## [0.1.0] - 2023-09-20
+## <small>0.1.0 (2023-09-20)</small>
 
 ### Added
 - Initial release of isbn-bisac-tools
