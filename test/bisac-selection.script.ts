@@ -25,7 +25,7 @@ async function runTests(): Promise<void> {
   // Get the latest BISAC data file
   let dataFilePath: string;
   try {
-    const outputDir = path.join(process.cwd(), 'output');
+    const outputDir = path.join(process.cwd(), 'data');
     dataFilePath = await utils.getLatestJsonFilePath(outputDir);
   } catch (error) {
     console.error(`❌ Error finding BISAC data file: ${(error as Error).message}`);

@@ -724,7 +724,7 @@ Examples:
   npm start -- --version                # Display the current version
 
 Note:
-  The scraper output will be saved to output/bisac-data.json.
+  The scraper output will be saved to data/bisac-data.json.
   Lookup operations use this file for reference.
 `);
 }

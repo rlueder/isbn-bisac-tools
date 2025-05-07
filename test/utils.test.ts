@@ -64,7 +64,7 @@ describe('utils', () => {
 
   describe('initialize', () => {
     it('should create output and screenshots directories', async () => {
-      const outputDir = '/test/output';
+      const outputDir = '/test/data';
       const screenshotsDir = '/test/screenshots';
 
       await utils.initialize(outputDir, screenshotsDir, true);
@@ -110,7 +110,7 @@ describe('utils', () => {
 
   describe('saveToJSON', () => {
     it('should save data to a JSON file', async () => {
-      const filePath = '/test/output/data.json';
+      const filePath = '/test/data/data.json';
       const data = { test: 'data' };
 
       await utils.saveToJSON(filePath, data);
@@ -149,7 +149,7 @@ describe('utils', () => {
   describe('browseJsonFile', () => {
     it('should find and display JSON files for browsing', async () => {
       // Mock implementation before importing modules
-      const mockFiles = ['/test/output/file1.json', '/test/output/file2.json'];
+      const mockFiles = ['/test/data/file1.json', '/test/data/file2.json'];
 
       const mockStats = [{ mtime: new Date('2023-01-01') }, { mtime: new Date('2023-01-02') }];
 
@@ -184,11 +184,11 @@ describe('utils', () => {
       const childProcess = await import('child_process');
 
       // Call the function
-      const result = await utils.browseJsonFile('/test/output');
+      const result = await utils.browseJsonFile('/test/data');
 
       // Verify the results
       expect(result).toBe(true);
-      expect(globMock).toHaveBeenCalledWith(`/test/output/*.json`);
+      expect(globMock).toHaveBeenCalledWith(`/test/data/*.json`);
       expect(fs.stat).toHaveBeenCalledTimes(2);
       expect(inquirerMock.prompt).toHaveBeenCalledTimes(1);
       expect(childProcess.spawn).toHaveBeenCalledWith('npx', ['fx'], {
@@ -212,7 +212,7 @@ describe('utils', () => {
       const consoleErrorMock = vi.spyOn(console, 'error').mockImplementation(() => {});
 
       // Call the function
-      const result = await utils.browseJsonFile('/test/output');
+      const result = await utils.browseJsonFile('/test/data');
 
       // Verify the results
       expect(result).toBe(false);

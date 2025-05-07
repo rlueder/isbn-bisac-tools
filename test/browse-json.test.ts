@@ -90,7 +90,7 @@ describe('Browse JSON Files functionality', () => {
   });
 
   it('should prioritize bisac-data.json when it exists', async () => {
-    const mockBisacDataPath = '/path/to/output/bisac-data.json';
+    const mockBisacDataPath = '/path/to/data/bisac-data.json';
 
     // Mock fs.access to resolve successfully for bisac-data.json
     vi.mocked(fsPromises.access).mockResolvedValueOnce(undefined);

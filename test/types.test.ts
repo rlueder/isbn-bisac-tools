@@ -6,8 +6,8 @@ describe('BISAC Types', () => {
     it('should validate correct ScraperConfig object', () => {
       const validConfig: ScraperConfig = {
         startUrl: 'https://www.bisg.org/complete-bisac-subject-headings-list',
-        outputDir: './output',
-        jsonPath: './output/bisac-subjects.json',
+        outputDir: './data',
+        jsonPath: './data/bisac-subjects.json',
         screenshotsDir: './screenshots',
         mainPage: {
           categoryLinks: '.field-items li a',
@@ -43,8 +43,8 @@ describe('BISAC Types', () => {
     it('should handle optional properties in ScraperConfig', () => {
       const minimalConfig: ScraperConfig = {
         startUrl: 'https://example.com',
-        outputDir: './output',
-        jsonPath: './output/data.json',
+        outputDir: './data',
+        jsonPath: './data/data.json',
         screenshotsDir: './screenshots',
         mainPage: {
           categoryLinks: '.links',

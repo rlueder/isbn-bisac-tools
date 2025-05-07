@@ -8,7 +8,7 @@ import chalk from 'chalk';
 
 // Get the current directory
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const outputDir = path.join(__dirname, '..', 'output');
+const outputDir = path.join(__dirname, '..', 'data');
 
 interface FileInfo {
   path: string;

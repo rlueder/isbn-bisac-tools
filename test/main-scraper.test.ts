@@ -31,7 +31,7 @@ vi.mock('../lib/utils.js', () => ({
   saveToJSON: vi.fn().mockResolvedValue(undefined),
   randomDelay: vi.fn().mockResolvedValue(undefined),
   checkExistingJsonFileForToday: vi.fn().mockResolvedValue(undefined),
-  createBackupOfBisacData: vi.fn().mockResolvedValue('/test/output/bisac-data-backup.json'),
+  createBackupOfBisacData: vi.fn().mockResolvedValue('/test/data/bisac-data-backup.json'),
 }));
 
 vi.mock('../src/browse-json.js', () => ({

@@ -3,7 +3,6 @@ src/
 test/
 .husky/
 screenshots/
-output/
 book_data.json
 
 # Config files

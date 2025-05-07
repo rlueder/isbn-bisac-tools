@@ -1,7 +1,6 @@
 dist/
 node_modules/
 coverage/
-output/
 screenshots/
 *.md
 *.json

@@ -130,7 +130,7 @@ export function randomDelay(min: number, max: number): Promise<number> {
 
 /**
  * Get the path to the latest JSON file in the output directory
- * @param outputDir - The directory containing BISAC JSON files (default: ./output)
+ * @param outputDir - The directory containing BISAC JSON files (default: ./data)
  * @returns The full path to the latest JSON file, or undefined if none found
  */
 /**
@@ -177,11 +177,11 @@ export async function runBisacScraper(): Promise<boolean> {
 
 /**
  * Check if a JSON file with today's date already exists
- * @param outputDir - The directory containing BISAC JSON files (default: ./output)
+ * @param outputDir - The directory containing BISAC JSON files (default: ./data)
  * @returns The full path to today's JSON file if it exists, or undefined if not found
  */
 export async function checkExistingJsonFileForToday(
-  outputDir: string = path.join(process.cwd(), 'output')
+  outputDir: string = path.join(process.cwd(), 'data')
 ): Promise<string | undefined> {
   try {
     // Use fixed filename instead of date-based naming
@@ -202,7 +202,7 @@ export async function checkExistingJsonFileForToday(
 }
 
 export async function getLatestJsonFilePath(
-  outputDir: string = path.join(process.cwd(), 'output')
+  outputDir: string = path.join(process.cwd(), 'data')
 ): Promise<string | undefined> {
   try {
     // Create the output directory if it doesn't exist
@@ -944,7 +944,7 @@ export async function printComparisonReport(comparison: BisacComparisonResult): 
 
 /**
  * Select two BISAC JSON files for comparison using an interactive prompt
- * @param outputDir - The directory containing BISAC JSON files (default: ./output)
+ * @param outputDir - The directory containing BISAC JSON files (default: ./data)
  * @returns Object containing paths to the selected files, or undefined if canceled
  */
 /**
@@ -953,7 +953,7 @@ export async function printComparisonReport(comparison: BisacComparisonResult): 
  * @returns Path to the created backup file, or undefined if backup failed
  */
 export async function createBackupOfBisacData(
-  outputDir: string = path.join(process.cwd(), 'output')
+  outputDir: string = path.join(process.cwd(), 'data')
 ): Promise<string | undefined> {
   try {
     // Ensure the output directory exists
@@ -1003,7 +1003,7 @@ export async function createBackupOfBisacData(
 }
 
 export async function selectFilesForComparison(
-  outputDir: string = path.join(process.cwd(), 'output')
+  outputDir: string = path.join(process.cwd(), 'data')
 ): Promise<{ olderFile: string; newerFile: string } | undefined> {
   try {
     // Ensure the output directory exists
@@ -1113,7 +1113,7 @@ export async function selectFilesForComparison(
  * Allows interactive selection of JSON files from the output directory
  */
 export async function browseJsonFile(
-  outputDir: string = path.join(process.cwd(), 'output')
+  outputDir: string = path.join(process.cwd(), 'data')
 ): Promise<boolean> {
   try {
     // Ensure the output directory exists
@@ -1123,7 +1123,7 @@ export async function browseJsonFile(
     const files = await glob(`${outputDir}/*.json`);
 
     if (files.length === 0) {
-      console.error('❌ No JSON files found in the output directory');
+      console.error('❌ No JSON files found in the data directory');
       return false;
     }
 
