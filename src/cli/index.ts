@@ -9,6 +9,7 @@
 import { Command } from 'commander';
 import { registerScrapeCommand } from './commands/scrape.js';
 import { registerHelpCommand } from './commands/help.js';
+import { registerLookupCommand } from './commands/lookup.js';
 
 /**
  * Initialize the CLI with all available commands
@@ -26,6 +27,7 @@ export function initializeCLI(): Command {
   // Register all commands from the commands directory
   registerScrapeCommand(program);
   registerHelpCommand(program);
+  registerLookupCommand(program);
 
   return program;
 }
