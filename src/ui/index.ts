@@ -7,6 +7,7 @@
 
 import ora, { Ora } from 'ora';
 import chalk from 'chalk';
+import * as progress from './progress.js';
 
 /**
  * Global spinner instance for progress display
@@ -116,6 +117,9 @@ export function log(
   console.log(formatMessage(message, type));
 }
 
+// Re-export all from progress module
+export * from './progress.js';
+
 // Default export for direct import
 export default {
   createSpinner,
@@ -124,4 +128,6 @@ export default {
   failSpinner,
   formatMessage,
   log,
+  // Include progress module exports
+  ...progress.default,
 };
