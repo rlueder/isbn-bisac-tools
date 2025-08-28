@@ -7,6 +7,8 @@
  */
 
 import { Command } from 'commander';
+import { registerScrapeCommand } from './commands/scrape.js';
+import { registerHelpCommand } from './commands/help.js';
 
 /**
  * Initialize the CLI with all available commands
@@ -21,7 +23,9 @@ export function initializeCLI(): Command {
     .description('Utilities for working with BISAC codes and ISBN lookups')
     .version(process.env.npm_package_version || '0.0.0');
 
-  // TODO: Register all commands from the commands directory
+  // Register all commands from the commands directory
+  registerScrapeCommand(program);
+  registerHelpCommand(program);
 
   return program;
 }
@@ -35,6 +39,11 @@ export async function parseCommandLineArgs(args: string[] = process.argv): Promi
 
   // Parse arguments and handle any errors
   try {
+    // Add a default action for the root command to show help
+    program.action(() => {
+      program.help();
+    });
+
     await program.parseAsync(args);
   } catch (error) {
     console.error('Error executing command:', error);
