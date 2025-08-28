@@ -6,8 +6,8 @@
  */
 
 import path from 'path';
-import * as utils from '../../lib/utils.js';
 import { BisacData, Category, Subject } from '../types/index.js';
+import * as storage from '../storage/index.js';
 
 /**
  * Default path to BISAC data file
@@ -21,8 +21,8 @@ const DEFAULT_DATA_PATH = path.join(process.cwd(), 'data', 'bisac-data.json');
  */
 export async function loadBisacData(filePath: string = DEFAULT_DATA_PATH): Promise<BisacData> {
   try {
-    // This will be replaced with a dedicated function from the storage module
-    return await utils.loadBisacData(filePath);
+    // Use the storage module to load BISAC data
+    return await storage.loadBisacData(filePath);
   } catch (error) {
     throw new Error(`Failed to load BISAC data: ${error.message}`);
   }

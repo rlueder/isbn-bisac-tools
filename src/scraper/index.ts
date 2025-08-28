@@ -5,34 +5,13 @@
  * from the BISG website.
  */
 
-import path from 'path';
 import { ScraperConfig } from '../types/index.js';
+import { getScraperConfig } from '../config/index.js';
 
 /**
- * Default scraper configuration
- * This will eventually be moved to a dedicated config file
+ * Import the configuration from the config module
+ * The default config is now managed in a central location
  */
-const DEFAULT_CONFIG: ScraperConfig = {
-  startUrl: 'https://www.bisg.org/complete-bisac-subject-headings-2021-edition',
-  outputDir: path.join(process.cwd(), 'data'),
-  get jsonPath() {
-    return path.join(this.outputDir, 'bisac-data.json');
-  },
-  screenshotsDir: path.join(process.cwd(), 'screenshots'),
-  mainPage: {
-    categoryLinks: 'a.link-bisac',
-  },
-  categoryPage: {
-    heading: 'h4',
-  },
-  minDelay: 500,
-  maxDelay: 2000,
-  maxCategories: null,
-  takeScreenshots: false,
-  browserOptions: {
-    headless: true,
-  },
-};
 
 /**
  * Initialize the scraper with the given configuration
@@ -43,24 +22,8 @@ export function initializeScraper(config: Partial<ScraperConfig> = {}): {
   config: ScraperConfig;
   scrape: () => Promise<never>;
 } {
-  // Merge default config with provided options
-  const mergedConfig: ScraperConfig = {
-    ...DEFAULT_CONFIG,
-    ...config,
-    // Merge nested objects
-    mainPage: {
-      ...DEFAULT_CONFIG.mainPage,
-      ...(config.mainPage || {}),
-    },
-    categoryPage: {
-      ...DEFAULT_CONFIG.categoryPage,
-      ...(config.categoryPage || {}),
-    },
-    browserOptions: {
-      ...DEFAULT_CONFIG.browserOptions,
-      ...(config.browserOptions || {}),
-    },
-  };
+  // Use the config module to merge configurations
+  const mergedConfig = getScraperConfig(config);
 
   return {
     config: mergedConfig,
@@ -86,5 +49,4 @@ export async function scrape(config: Partial<ScraperConfig> = {}): Promise<void>
 export default {
   initializeScraper,
   scrape,
-  DEFAULT_CONFIG,
 };
