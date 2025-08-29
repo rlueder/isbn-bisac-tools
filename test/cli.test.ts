@@ -38,6 +38,7 @@ describe('CLI functionality', () => {
         enableScreenshots: false,
         compare: false,
         scrape: false,
+        maxErrors: 5,
       });
     });
 

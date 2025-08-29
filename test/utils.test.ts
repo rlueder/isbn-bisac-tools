@@ -162,7 +162,7 @@ describe('utils', () => {
       // Mock stat to return different dates for each file
       (
         fs.stat as unknown as {
-          mockImplementation: (callback: (path: string) => Promise<any>) => void;
+          mockImplementation: (callback: (path: string) => Promise<unknown>) => void;
         }
       ).mockImplementation((path: string) => {
         if (path === mockFiles[0]) return Promise.resolve(mockStats[0]);
@@ -175,7 +175,7 @@ describe('utils', () => {
 
       // Mock inquirer to simulate user selecting the second file
       (
-        inquirerMock.prompt as unknown as { mockResolvedValue: (value: any) => void }
+        inquirerMock.prompt as unknown as { mockResolvedValue: (value: unknown) => void }
       ).mockResolvedValue({
         selectedFile: mockFiles[1],
       });

@@ -152,6 +152,8 @@ const CONFIG: ScraperConfig = {
   categoryPage: {
     heading: 'h4',
   },
+  // Maximum number of consecutive errors before cancelling operation
+  maxConsecutiveErrors: 5,
 };
 
 /**
@@ -328,7 +330,8 @@ async function scrape(
   singleCategoryUrl?: string,
   customConfig?: ScraperConfig,
   browseMode?: boolean,
-  isTestMode?: boolean
+  isTestMode?: boolean,
+  maxConsecutiveErrors?: number
 ): Promise<Category[]> {
   // Use custom config if provided, otherwise use default CONFIG
   const config = customConfig || CONFIG;
@@ -415,6 +418,8 @@ async function scrape(
 
       // Process each category page
       const allCategoryData: Category[] = [];
+      let consecutiveErrorCount = 0;
+      const errorThreshold = maxConsecutiveErrors || config.maxConsecutiveErrors || 5;
 
       for (let i = 0; i < urlsToProcess.length; i++) {
         const url = urlsToProcess[i];
@@ -435,12 +440,31 @@ async function scrape(
             if (spinner) {
               spinner.succeed(`Successfully added ${chalk.green(categoryData.heading)} to dataset`);
             }
+            // Reset consecutive error count on success
+            consecutiveErrorCount = 0;
           }
         } catch (error) {
           if (spinner) {
             spinner.fail(`Failed to process ${chalk.red(url)}`);
           }
-          // Continue with the next URL despite the error
+          // Increment consecutive error count
+          consecutiveErrorCount++;
+
+          // Check if we need to cancel the operation due to too many consecutive errors
+          if (consecutiveErrorCount >= errorThreshold) {
+            if (spinner) {
+              spinner.fail(
+                `${chalk.red('Cancelling operation:')} ${errorThreshold} consecutive errors encountered`
+              );
+            } else {
+              console.error(
+                `\n❌ Cancelling operation: ${errorThreshold} consecutive errors encountered`
+              );
+            }
+            break; // Exit the loop
+          }
+
+          // Continue with the next URL despite the error if not cancelled
         }
 
         // Add a random delay between page visits
@@ -555,6 +579,7 @@ function parseCommandLineArgs(): {
   enableScreenshots: boolean;
   compare: boolean;
   scrape: boolean;
+  maxErrors?: number;
 } {
   // Read package.json to get version
   let packageJson;
@@ -597,12 +622,14 @@ function parseCommandLineArgs(): {
     enableScreenshots: boolean;
     compare: boolean;
     scrape: boolean;
+    maxErrors?: number;
   } = {
     shouldShowHelp: false,
     lookupMode: false,
     enableScreenshots: false,
     compare: false,
     scrape: false,
+    maxErrors: 5,
   };
 
   program
@@ -617,6 +644,11 @@ function parseCommandLineArgs(): {
     .option('-s, --screenshots', 'Enable taking screenshots during scraping')
     .option('--scrape', 'Run the BISAC web scraper to gather up-to-date data')
     .option('--compare', 'Compare two BISAC JSON files to identify changes')
+    .option(
+      '--max-errors <number>',
+      'Maximum number of consecutive errors before cancelling operation',
+      '5'
+    )
     .helpOption('-h, --help', 'Display help for command')
     .action(options => {
       if (options.url) {
@@ -661,6 +693,15 @@ function parseCommandLineArgs(): {
       if (options.scrape) {
         result.scrape = true;
       }
+
+      if (options.maxErrors) {
+        const parsedValue = parseInt(options.maxErrors, 10);
+        if (!isNaN(parsedValue) && parsedValue > 0) {
+          result.maxErrors = parsedValue;
+        } else {
+          console.warn('⚠️ Invalid value for max-errors. Using default value of 5.');
+        }
+      }
     });
 
   program.parse();
@@ -699,6 +740,7 @@ Lookup Options:
 
 Analysis Options:
   --compare              Compare bisac-data.json with a backup to identify changes between versions
+  --max-errors <number>  Maximum number of consecutive errors before cancelling operation (default: 5)
 
 Flexible Matching:
   The lookup utilities support flexible matching:
@@ -1201,3 +1243,35 @@ export {
   CONFIG,
   CATEGORY_URLS,
 };
+
+// Execute main function if this is the entry point
+if (import.meta.url === new URL(process.argv[1], 'file:').href) {
+  (async () => {
+    const args = parseCommandLineArgs();
+
+    if (
+      args.shouldShowHelp ||
+      (!args.scrape && !args.categoryUrl && !args.lookupMode && !args.compare)
+    ) {
+      showHelp();
+      process.exit(0);
+    }
+
+    // Scrape mode
+    if (args.scrape || args.categoryUrl) {
+      const config: ScraperConfig = {
+        ...CONFIG,
+        takeScreenshots: args.enableScreenshots,
+        maxConsecutiveErrors: args.maxErrors,
+      };
+
+      await scrape(args.categoryUrl, config);
+      process.exit(0);
+    }
+
+    // Lookup mode handled elsewhere
+  })().catch(error => {
+    console.error('Fatal error:', error);
+    process.exit(1);
+  });
+}
