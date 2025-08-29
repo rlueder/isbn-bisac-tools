@@ -1,3 +1,9 @@
+## <small>0.4.2 (2025-08-29)</small>
+
+* fix: resolve BISAC data file path for global installation ([7703130](https://github.com/yourusername/isbn-bisac-tools/commit/7703130))
+
+
+
 ## <small>0.4.1 (2025-08-29)</small>
 
 * docs: update README with current CLI commands ([748d3b9](https://github.com/yourusername/isbn-bisac-tools/commit/748d3b9))
