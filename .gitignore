@@ -6,6 +6,7 @@ yarn.lock
 # Output
 dist/*
 screenshots/
+*.tgz
 
 # Logs
 logs

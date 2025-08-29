@@ -1,11 +1,11 @@
 {
   "name": "isbn-bisac-tools",
-  "version": "0.3.0",
+  "version": "0.2.11",
   "description": "A toolkit for working with BISAC subject headings and ISBN lookups",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "bin": {
-    "isbn-bisac-tools": "dist/src/index.js"
+    "isbn-bisac-tools": "dist/src/cli.js"
   },
   "files": [
     "dist",
@@ -25,10 +25,10 @@
     "lint": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\" --fix",
     "prepare": "husky",
-    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/index.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/",
-    "scrape": "tsx src/index.ts",
-    "scrape:url": "tsx src/index.ts --url",
-    "start": "tsx src/index.ts --help",
+    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/cli.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/",
+    "scrape": "tsx src/cli.ts --scrape",
+    "scrape:url": "tsx src/cli.ts --url",
+    "start": "tsx src/cli.ts --help",
     "test": "vitest run",
     "test:bisac": "tsx test/bisac-selection.script.ts",
     "test:coverage": "vitest run --coverage",

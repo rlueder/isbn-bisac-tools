@@ -1244,34 +1244,4 @@ export {
   CATEGORY_URLS,
 };
 
-// Execute main function if this is the entry point
-if (import.meta.url === new URL(process.argv[1], 'file:').href) {
-  (async () => {
-    const args = parseCommandLineArgs();
-
-    if (
-      args.shouldShowHelp ||
-      (!args.scrape && !args.categoryUrl && !args.lookupMode && !args.compare)
-    ) {
-      showHelp();
-      process.exit(0);
-    }
-
-    // Scrape mode
-    if (args.scrape || args.categoryUrl) {
-      const config: ScraperConfig = {
-        ...CONFIG,
-        takeScreenshots: args.enableScreenshots,
-        maxConsecutiveErrors: args.maxErrors,
-      };
-
-      await scrape(args.categoryUrl, config);
-      process.exit(0);
-    }
-
-    // Lookup mode handled elsewhere
-  })().catch(error => {
-    console.error('Fatal error:', error);
-    process.exit(1);
-  });
-}
+// Export functions for use as a module
