@@ -11,6 +11,7 @@ import { registerScrapeCommand } from './commands/scrape.js';
 import { registerHelpCommand } from './commands/help.js';
 import { registerLookupCommand } from './commands/lookup.js';
 import { registerBrowseCommand } from './commands/browse.js';
+import { registerCompareCommand } from './commands/compare.js';
 
 /**
  * Initialize the CLI with all available commands
@@ -30,6 +31,7 @@ export function initializeCLI(): Command {
   registerHelpCommand(program);
   registerLookupCommand(program);
   registerBrowseCommand(program);
+  registerCompareCommand(program);
 
   return program;
 }
