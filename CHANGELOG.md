@@ -1,3 +1,11 @@
+## <small>0.3.3 (2025-08-29)</small>
+
+* fix: resolve diagnostics issues ([a420d5a](https://github.com/yourusername/isbn-bisac-tools/commit/a420d5a))
+* fix: resolve failing tests and diagnostic errors ([636e844](https://github.com/yourusername/isbn-bisac-tools/commit/636e844))
+* refactor: consolidate CLI entry points into a single interface ([ce245f5](https://github.com/yourusername/isbn-bisac-tools/commit/ce245f5))
+
+
+
 ## <small>0.3.2 (2025-08-29)</small>
 
 * fix: module exports ([ee61b03](https://github.com/yourusername/isbn-bisac-tools/commit/ee61b03))
