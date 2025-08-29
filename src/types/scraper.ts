@@ -49,6 +49,8 @@ export interface ScraperConfig {
     /** Additional launch options */
     [key: string]: unknown;
   };
+  /** Maximum number of consecutive errors before cancelling operation */
+  maxConsecutiveErrors?: number;
 }
 
 /**
