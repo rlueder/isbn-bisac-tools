@@ -1,3 +1,11 @@
+## <small>0.2.14 (2025-08-29)</small>
+
+* chore: add DEVELOPMENT_PLAN.md ([c7aad21](https://github.com/yourusername/isbn-bisac-tools/commit/c7aad21))
+* chore: update TODO ([477e4a0](https://github.com/yourusername/isbn-bisac-tools/commit/477e4a0))
+* docs: update CHANGELOG with missing entries ([a0fcb21](https://github.com/yourusername/isbn-bisac-tools/commit/a0fcb21))
+
+
+
 ## <small>0.2.13 (2025-08-29)</small>
 
 * fix: correct npm versioning using GH actions ([81a14e7](https://github.com/yourusername/isbn-bisac-tools/commit/81a14e7))

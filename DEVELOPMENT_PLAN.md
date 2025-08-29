@@ -226,30 +226,16 @@ Steps:
 - Use conventional commits
 - Keep commits atomic and focused
 - Write clear commit messages
-- Include all necessary documentation updates in each commit
 
 ### Quality Gates
 Before committing:
-1. Update documentation:
-   - README.md changes
-   - CHANGELOG.md updates
-   - API documentation if needed
-   - Examples for new features
-2. Run linting: `npm run lint`
-3. Run tests: `npm test`
-4. Check test coverage
-5. Verify documentation completeness
-6. Build project: `npm run build`
+1. Run linting: `npm run lint`
+2. Run tests: `npm test`
+3. Check test coverage
+4. Verify documentation
+5. Build project: `npm run build`
 
-### Commit Requirements
-
-1. Documentation Updates:
-   - README.md must be updated with any new features or changes
-   - CHANGELOG.md must be updated following conventional changelog format
-   - API documentation must be updated if applicable
-   - Examples must be added or updated as needed
-
-2. Commit Message Format:
+### Commit Message Format
 ```
 type(scope): description
 
@@ -258,8 +244,6 @@ type(scope): description
 [optional footer]
 ```
 Types: feat, fix, docs, style, refactor, test, chore
-
-Note: Documentation changes must be included in the same commit as the feature/fix they document, not as separate commits.
 
 ### PR Review Process
 1. Self-review changes
