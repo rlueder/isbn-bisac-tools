@@ -1,3 +1,9 @@
+## <small>0.4.1 (2025-08-29)</small>
+
+* docs: update README with current CLI commands ([748d3b9](https://github.com/yourusername/isbn-bisac-tools/commit/748d3b9))
+
+
+
 ## 0.4.0 (2025-08-29)
 
 * fix: save BISAC categories to book_data.json ([08da24b](https://github.com/yourusername/isbn-bisac-tools/commit/08da24b))
