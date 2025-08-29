@@ -1,3 +1,9 @@
+## <small>0.2.13 (2025-08-29)</small>
+
+* fix: correct npm versioning using GH actions ([81a14e7](https://github.com/yourusername/isbn-bisac-tools/commit/81a14e7))
+
+
+
 # Changelog
 
 ## <small>0.2.12 (2024-03-27)</small>
