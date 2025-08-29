@@ -1,3 +1,11 @@
+## <small>0.3.1 (2025-08-29)</small>
+
+* fix: gh actions ([d4b041c](https://github.com/yourusername/isbn-bisac-tools/commit/d4b041c))
+* feat: add data export functionality with CSV, Excel, and XML support ([8ea907d](https://github.com/yourusername/isbn-bisac-tools/commit/8ea907d))
+* chore: add DEVELOPMENT_PLAN.md ([bc79d73](https://github.com/yourusername/isbn-bisac-tools/commit/bc79d73))
+
+
+
 ## <small>0.2.14 (2025-08-29)</small>
 
 * chore: add DEVELOPMENT_PLAN.md ([c7aad21](https://github.com/yourusername/isbn-bisac-tools/commit/c7aad21))
