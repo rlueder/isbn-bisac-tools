@@ -39,6 +39,11 @@ A comprehensive TypeScript toolkit for working with BISAC (Book Industry Standar
   - Translate ISBNs to BISAC codes using Google Books API
   - Intelligently identify the most relevant BISAC code
 
+- **Data Export**
+  - Export BISAC data to CSV, Excel (XLSX), and XML formats
+  - Customizable field mappings and formatting options
+  - Support for file output or direct content access
+
 - **Usability**
   - Interactive JSON browsing with `fx`
   - Compare two JSON files to identify changes between different dates
@@ -139,9 +144,72 @@ isbn-bisac-tools --isbn 9781234567890
 # Compare two JSON files
 isbn-bisac-tools --compare
 
+# Export BISAC data (basic usage)
+isbn-bisac-tools export                    # Default CSV output
+isbn-bisac-tools export -f csv -o data.csv # Specify format and output file
+isbn-bisac-tools export -f excel -o data.xlsx --sheet-name "BISAC Codes"
+isbn-bisac-tools export -f xml -o data.xml --pretty
+
+# Export with field customization
+isbn-bisac-tools export --fields code,label # Only specific fields
+isbn-bisac-tools export --mapping '{"code":"BISAC_CODE","label":"DESCRIPTION"}' # Custom field names
+isbn-bisac-tools export --delimiter ";" # Custom CSV delimiter
+isbn-bisac-tools export -f xml --xml-root "bisac-codes" # Custom XML root element
+
 # Show help information
 isbn-bisac-tools --help
 ```
+
+### Export Command
+
+The export command allows you to convert BISAC data to various formats for use in other systems.
+
+**Basic Usage:**
+
+```bash
+# Default CSV export
+isbn-bisac-tools export
+
+# Export to specific format and file
+isbn-bisac-tools export -f csv -o output.csv
+isbn-bisac-tools export -f excel -o output.xlsx
+isbn-bisac-tools export -f xml -o output.xml
+```
+
+**Available Options:**
+
+- `-f, --format <format>`: Output format (csv, excel, xml). Default is csv
+- `-o, --output <file>`: Output file path (optional)
+- `--fields <list>`: Comma-separated list of fields to include
+- `--mapping <json>`: JSON string to map field names
+- `--delimiter <char>`: Custom delimiter for CSV output (default: ,)
+- `--sheet-name <name>`: Custom sheet name for Excel output
+- `--xml-root <name>`: Custom root element name for XML output
+- `--pretty`: Pretty print XML output
+
+**Examples:**
+
+```bash
+# Export only specific fields
+isbn-bisac-tools export --fields code,label
+
+# Export with custom field names
+isbn-bisac-tools export --mapping '{"code":"BISAC_CODE","label":"DESCRIPTION"}'
+
+# Export to CSV with semicolon delimiter
+isbn-bisac-tools export --delimiter ";" -o european.csv
+
+# Export to Excel with custom sheet name
+isbn-bisac-tools export -f excel --sheet-name "BISAC Categories" -o bisac.xlsx
+
+# Export to pretty-printed XML with custom root
+isbn-bisac-tools export -f xml --xml-root "categories" --pretty -o bisac.xml
+```
+
+Available fields for export:
+- `code`: The BISAC subject code
+- `heading`: The category heading
+- `label`: The descriptive label for the subject code
 
 **Development Commands:**
 
