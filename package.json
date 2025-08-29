@@ -1,6 +1,6 @@
 {
   "name": "isbn-bisac-tools",
-  "version": "0.3.5",
+  "version": "0.4.0",
   "description": "A toolkit for working with BISAC subject headings and ISBN lookups",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",

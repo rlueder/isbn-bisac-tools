@@ -1,3 +1,10 @@
+## 0.4.0 (2025-08-29)
+
+* fix: save BISAC categories to book_data.json ([08da24b](https://github.com/yourusername/isbn-bisac-tools/commit/08da24b))
+* feat: add selector validation to prevent silent failures ([1a8151c](https://github.com/yourusername/isbn-bisac-tools/commit/1a8151c))
+
+
+
 ## <small>0.3.5 (2025-08-29)</small>
 
 * chore: update version to 0.3.4 ([03b7a65](https://github.com/yourusername/isbn-bisac-tools/commit/03b7a65))
