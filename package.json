@@ -5,13 +5,12 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "bin": {
-    "isbn-bisac-tools": "bin/cli.js"
+    "isbn-bisac-tools": "dist/src/cli.js"
   },
   "files": [
     "dist",
     "lib",
-    "data",
-    "bin"
+    "data"
   ],
   "type": "module",
   "exports": {
@@ -35,13 +34,17 @@
     "format:check": "prettier --check 'src/**/*.ts' 'lib/**/*.ts' 'test/**/*.ts'",
     "lint": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\" --fix",
+    "lint:scripts": "eslint \"scripts/**/*.js\" --rule 'no-undef:0' --rule 'no-console:0'",
     "prepare": "husky",
-    "prepublishOnly": "npm run clean && npm run build && mkdir -p bin && echo '#!/usr/bin/env node\nimport(new URL(\"../dist/src/cli.js\", import.meta.url)).catch(console.error);' > bin/cli.js && chmod +x bin/cli.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/ && npm run changelog",
+    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/cli.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/ && npm run changelog",
     "scrape": "tsx src/cli.ts --scrape",
     "scrape:url": "tsx src/cli.ts --url",
     "start": "tsx src/cli.ts --help",
     "test": "vitest run",
     "test:bisac": "tsx test/bisac-selection.script.ts",
+    "export:test": "node scripts/test-export.js",
+    "export:direct": "node scripts/direct-export.js",
+    "export:all": "npm run export:test && npm run export:direct",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"

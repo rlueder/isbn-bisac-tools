@@ -140,6 +140,18 @@ export function randomDelay(min: number, max: number): Promise<number> {
 export async function runBisacScraper(): Promise<boolean> {
   console.log('🔄 No existing BISAC data files found. Running the scraper...');
 
+  // Log directory information for debugging
+  const currentDir = process.cwd();
+  console.log(`📂 Current working directory: ${currentDir}`);
+  const dataDir = path.join(currentDir, 'data');
+  console.log(`📂 Data directory path: ${dataDir}`);
+
+  // Check if data directory exists
+  if (!fsSync.existsSync(dataDir)) {
+    console.log(`📂 Creating data directory: ${dataDir}`);
+    fsSync.mkdirSync(dataDir, { recursive: true });
+  }
+
   return new Promise(resolve => {
     console.log('🚀 Attempting to run the BISAC scraper...');
 
@@ -148,16 +160,25 @@ export async function runBisacScraper(): Promise<boolean> {
 
     try {
       // Use spawn to allow stdio inheritance
-      const scraperProcess = spawn(npmExecutable, ['run', 'start'], {
+      const scraperProcess = spawn(npmExecutable, ['run', 'scrape'], {
         cwd: process.cwd(),
         stdio: 'inherit',
         shell: true, // Use shell to properly handle npm commands
       });
 
-      scraperProcess.on('close', code => {
+      scraperProcess.on('close', async code => {
         if (code === 0) {
           console.log('✅ Scraper completed successfully');
-          resolve(true);
+
+          // Verify the data file was created
+          try {
+            const dataFilePath = await getLatestJsonFilePath();
+            console.log(`✅ Found generated BISAC data file: ${dataFilePath}`);
+            resolve(true);
+          } catch (error) {
+            console.error(`❌ Failed to find BISAC data file after running the scraper`);
+            resolve(false);
+          }
         } else {
           console.error(`❌ Scraper failed with code ${code}`);
           resolve(false);
@@ -203,44 +224,48 @@ export async function checkExistingJsonFileForToday(
 
 export async function getLatestJsonFilePath(
   outputDir: string = path.join(process.cwd(), 'data')
-): Promise<string | undefined> {
+): Promise<string> {
   try {
     // Create the output directory if it doesn't exist
     await fs.mkdir(outputDir, { recursive: true });
 
-    // Check for the fixed filename
+    // Check for the fixed filename in the specified output directory
     const filePath = path.join(outputDir, 'bisac-data.json');
 
     try {
       await fs.access(filePath);
-      console.log(`📂 Found BISAC data file: bisac-data.json`);
+      console.log(`📂 Found BISAC data file: ${filePath}`);
       return filePath;
     } catch (err) {
-      // Handle the case where no BISAC data file exists
-      console.warn('⚠️ No BISAC data file found in the output directory');
+      // Handle the case where no BISAC data file exists in output directory
+      console.warn(`⚠️ No BISAC data file found in the output directory: ${outputDir}`);
     }
 
-    // If no files found, run the scraper
-    console.log('🚀 Running the BISAC scraper to generate data...');
-    const scraperSuccess = await runBisacScraper();
+    // Check in the module directory
+    try {
+      const moduleDir = new URL('.', import.meta.url).pathname;
+      const moduleDataPath = path.resolve(moduleDir, '..', '..', 'data', 'bisac-data.json');
 
-    if (scraperSuccess) {
-      // Check if the file now exists
-      try {
-        await fs.access(filePath);
-        console.log(`📂 BISAC data file generated successfully`);
-        return filePath;
-      } catch (err) {
-        console.error('❌ Failed to find BISAC data file after running the scraper');
-        return undefined;
+      if (fsSync.existsSync(moduleDataPath)) {
+        console.log(`📂 Found BISAC data file in module directory: ${moduleDataPath}`);
+        return moduleDataPath;
       }
-    } else {
-      console.error('❌ Failed to run the BISAC scraper');
-      return undefined;
+    } catch (modulePathError) {
+      console.warn(`⚠️ Could not check module path: ${(modulePathError as Error).message}`);
     }
+
+    // Check in the root directory of the project
+    const projectRootPath = path.resolve(process.cwd(), '..', 'data', 'bisac-data.json');
+    if (fsSync.existsSync(projectRootPath)) {
+      console.log(`📂 Found BISAC data file in project root: ${projectRootPath}`);
+      return projectRootPath;
+    }
+
+    // If no files found, throw an error
+    throw new Error('No BISAC data file found in any directory');
   } catch (error) {
     console.error(`❌ Error finding latest JSON file: ${(error as Error).message}`);
-    return undefined;
+    throw new Error(`Failed to find BISAC data file: ${(error as Error).message}`);
   }
 }
 
@@ -301,7 +326,7 @@ export async function loadBisacData(filePath?: string): Promise<Category[]> {
     return jsonData as Category[];
   } catch (error) {
     console.error(`❌ Error loading BISAC data: ${(error as Error).message}`);
-    return [];
+    throw new Error(`Failed to load BISAC data: ${(error as Error).message}`);
   }
 }
 

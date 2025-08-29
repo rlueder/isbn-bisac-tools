@@ -11,6 +11,7 @@ import { writeFile } from 'fs/promises';
 import { parse as json2csv } from 'json2csv';
 import * as XLSX from 'xlsx';
 import { create as createXML } from 'xmlbuilder2';
+import path from 'path';
 import { Category } from '../types/index.js';
 
 /**
@@ -175,6 +176,8 @@ export async function exportBISACData(
   try {
     let content: string | Buffer;
 
+    console.log(`📊 Exporting ${data.length} categories to ${options.format} format`);
+
     // Generate export content based on format
     switch (options.format) {
       case 'csv':
@@ -192,7 +195,14 @@ export async function exportBISACData(
 
     // Save to file if filepath provided
     if (options.filepath) {
+      console.log(`💾 Saving file to: ${options.filepath}`);
+      const resolvedPath =
+        options.filepath.startsWith('./') || options.filepath.startsWith('../')
+          ? path.resolve(process.cwd(), options.filepath)
+          : options.filepath;
+      console.log(`💾 Absolute path: ${resolvedPath}`);
       await writeFile(options.filepath, content);
+      console.log(`✅ File saved successfully`);
     }
 
     // Calculate total records

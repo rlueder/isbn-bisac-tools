@@ -162,7 +162,11 @@ isbn-bisac-tools --help
 
 ### Export Command
 
-The export command allows you to convert BISAC data to various formats for use in other systems.
+The export command allows you to convert BISAC data to various formats (CSV, Excel, XML) for use in other systems. This is useful for integration with other applications or data analysis.
+
+
+**Usage Examples:**
+
 
 **Basic Usage:**
 
@@ -210,6 +214,15 @@ Available fields for export:
 - `code`: The BISAC subject code
 - `heading`: The category heading
 - `label`: The descriptive label for the subject code
+
+**Troubleshooting Tips:**
+
+If you encounter issues with the export command:
+
+1. Make sure you've generated BISAC data by running the scraper first: `isbn-bisac-tools scrape`
+2. Use absolute file paths with the `-o` option to avoid path resolution issues
+3. Verify you have write permissions in the output directory
+4. For larger exports, the Excel format may be more efficient than CSV or XML
 
 **Development Commands:**
 

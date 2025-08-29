@@ -70,13 +70,14 @@ describe('BISAC Lookup Functions', () => {
       expect(result).toEqual(mockData);
     });
 
-    it('should return an empty array and log error when file read fails', async () => {
+    it('should throw an error when file read fails', async () => {
       vi.mocked(fs.readFile).mockRejectedValue(new Error('File not found'));
 
-      const result = await utils.loadBisacData('non-existent-file.json');
+      await expect(utils.loadBisacData('non-existent-file.json')).rejects.toThrow(
+        'Failed to load BISAC data'
+      );
 
       expect(fs.readFile).toHaveBeenCalledWith('non-existent-file.json', 'utf-8');
-      expect(result).toEqual([]);
       expect(consoleErrorMock).toHaveBeenCalledWith(
         expect.stringContaining('Error loading BISAC data')
       );
