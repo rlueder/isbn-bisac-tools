@@ -561,7 +561,8 @@ function getBestBisacCategory(
 
 export async function getCodeFromISBN(
   isbn: string,
-  dataFilePath?: string
+  dataFilePath?: string,
+  saveResults: boolean = true
 ): Promise<{
   title: string;
   categories: Array<{ code: string; fullLabel: string }>;
@@ -648,6 +649,26 @@ export async function getCodeFromISBN(
 
     // Find the best category if multiple were found
     const bestCategory = getBestBisacCategory(categories, book);
+
+    // Save the results to book_data.json if saveResults is true
+    if (saveResults && categories.length > 0) {
+      try {
+        // Add BISAC categories to the book data
+        book.volumeInfo.bisacCategories = categories.map(cat => ({
+          code: cat.code,
+          label: cat.fullLabel,
+        }));
+
+        // Save the data to book_data.json
+        const bookDataPath = path.join(process.cwd(), 'book_data.json');
+        await fs.writeFile(bookDataPath, JSON.stringify(data, null, 2));
+        console.log(`✅ Book data with BISAC categories saved to: ${bookDataPath}`);
+      } catch (saveError) {
+        console.error(
+          `⚠️ Warning: Could not save book data: ${saveError instanceof Error ? saveError.message : String(saveError)}`
+        );
+      }
+    }
 
     // We don't need to log here as the caller will handle it
     return { title, categories, bestCategory };

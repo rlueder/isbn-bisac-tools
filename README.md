@@ -145,6 +145,13 @@ isbn-bisac-tools --label "FICTION / War & Military"
 
 # Get BISAC code(s) for a book by ISBN
 isbn-bisac-tools --isbn 9781234567890
+
+# Enhanced ISBN lookup (saves to book_data.json)
+isbn-bisac-tools isbn 9781234567890
+
+# Enhance book data with BISAC categories
+isbn-bisac-tools enhance 9781234567890
+isbn-bisac-tools enhance 9781234567890 --output custom_book_data.json
 ```
 
 **Analysis Commands:**

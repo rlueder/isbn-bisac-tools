@@ -14,6 +14,7 @@ import { registerBrowseCommand } from './commands/browse.js';
 import { registerCompareCommand } from './commands/compare.js';
 import { registerExportCommand } from './commands/export.js';
 import { registerIsbnCommand } from './commands/isbn.js';
+import { registerEnhanceCommand } from './commands/enhance.js';
 import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
@@ -77,6 +78,7 @@ export function initializeCLI(): Command {
   registerCompareCommand(program);
   registerExportCommand(program);
   registerIsbnCommand(program);
+  registerEnhanceCommand(program);
 
   return program;
 }

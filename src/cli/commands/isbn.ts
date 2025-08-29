@@ -44,10 +44,11 @@ export async function executeIsbnCommand(isbn: string, options: { path?: string 
 
     ui.log(`Looking up BISAC codes for ISBN: ${chalk.cyan(cleanIsbn)}`, 'info');
 
-    // Call the utility function to get BISAC codes for the ISBN
+    // Call the utility function to get BISAC codes for the ISBN and save results to book_data.json
     const { title, categories, bestCategory } = await utils.getCodeFromISBN(
       cleanIsbn,
-      options.path
+      options.path,
+      true // Set saveResults to true to save to book_data.json
     );
 
     if (categories.length > 0) {
