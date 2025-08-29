@@ -1,3 +1,14 @@
+## <small>0.3.5 (2025-08-29)</small>
+
+* chore: update version to 0.3.4 ([03b7a65](https://github.com/yourusername/isbn-bisac-tools/commit/03b7a65))
+* fix: directly handle version and help flags for global CLI installation ([fdcfa44](https://github.com/yourusername/isbn-bisac-tools/commit/fdcfa44))
+* fix: make CLI commands display output when installed globally ([0e14dd5](https://github.com/yourusername/isbn-bisac-tools/commit/0e14dd5))
+* fix: resolve diagnostics issues ([a420d5a](https://github.com/yourusername/isbn-bisac-tools/commit/a420d5a))
+* fix: resolve failing tests and diagnostic errors ([636e844](https://github.com/yourusername/isbn-bisac-tools/commit/636e844))
+* refactor: consolidate CLI entry points into a single interface ([ce245f5](https://github.com/yourusername/isbn-bisac-tools/commit/ce245f5))
+
+
+
 ## <small>0.3.4 (2025-06-26)</small>
 
 * fix: directly handle version and help flags for global CLI installation ([fdcfa44](https://github.com/yourusername/isbn-bisac-tools/commit/fdcfa44))
