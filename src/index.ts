@@ -7,7 +7,6 @@
  * @module isbn-bisac-tools
  */
 
-import * as path from 'path';
 import { ScraperConfig } from './types/index.js';
 
 // Re-export types for consumers of the library

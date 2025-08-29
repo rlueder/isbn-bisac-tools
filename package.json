@@ -18,7 +18,7 @@
       "import": "./dist/src/index.js",
       "types": "./dist/src/index.d.ts"
     },
-    "cli": {
+    "./cli": {
       "import": "./dist/src/cli.js",
       "types": "./dist/src/cli.d.ts"
     }
