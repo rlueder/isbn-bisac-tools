@@ -24,30 +24,22 @@ process.on('unhandledRejection', error => {
   process.exit(1);
 });
 
-// Only execute if this is the main module
-const isMainModule = import.meta.url === new URL(process.argv[1], 'file:').href;
-
-if (isMainModule) {
-  // Execute main function with proper error handling
-  try {
-    parseCommandLineArgs(process.argv)
-      .then(() => {
-        // Give process time to flush stdout
-        setTimeout(() => {
-          process.exit(0);
-        }, 10);
-      })
-      .catch(error => {
-        console.error(chalk.red('Error:'), error instanceof Error ? error.message : String(error));
-        process.exit(1);
-      });
-  } catch (error) {
-    console.error(
-      chalk.red('Fatal error:'),
-      error instanceof Error ? error.message : String(error)
-    );
-    process.exit(1);
-  }
+// Execute the CLI
+try {
+  parseCommandLineArgs(process.argv)
+    .then(() => {
+      // Give process time to flush stdout
+      setTimeout(() => {
+        process.exit(0);
+      }, 100); // Increased timeout for flushing
+    })
+    .catch(error => {
+      console.error(chalk.red('Error:'), error instanceof Error ? error.message : String(error));
+      process.exit(1);
+    });
+} catch (error) {
+  console.error(chalk.red('Fatal error:'), error instanceof Error ? error.message : String(error));
+  process.exit(1);
 }
 
 // Export nothing - this is just an entry point

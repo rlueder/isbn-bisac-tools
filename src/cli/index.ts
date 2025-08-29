@@ -14,7 +14,7 @@ import { registerBrowseCommand } from './commands/browse.js';
 import { registerCompareCommand } from './commands/compare.js';
 import { registerExportCommand } from './commands/export.js';
 import { registerIsbnCommand } from './commands/isbn.js';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -35,15 +35,27 @@ export function initializeCLI(): Command {
     // Try to find package.json by going up directories
     // First try: dist/src/cli -> dist/src -> dist -> root
     const packagePath = join(__dirname, '../../../package.json');
+
     try {
-      const packageJson = JSON.parse(readFileSync(packagePath, 'utf8'));
-      version = packageJson.version;
+      if (existsSync(packagePath)) {
+        const packageContent = readFileSync(packagePath, 'utf8');
+        const packageJson = JSON.parse(packageContent);
+        version = packageJson.version;
+      } else {
+        throw new Error('Package.json not found at primary path');
+      }
     } catch (e) {
       // If that fails, we might be running from the source directory
       // Try: src/cli -> src -> root
       const altPackagePath = join(__dirname, '../../package.json');
-      const packageJson = JSON.parse(readFileSync(altPackagePath, 'utf8'));
-      version = packageJson.version;
+
+      if (existsSync(altPackagePath)) {
+        const packageContent = readFileSync(altPackagePath, 'utf8');
+        const packageJson = JSON.parse(packageContent);
+        version = packageJson.version;
+      } else {
+        throw new Error('Alternative package.json not found');
+      }
     }
   } catch (error) {
     // Fall back to npm_package_version or default
@@ -55,7 +67,7 @@ export function initializeCLI(): Command {
   program
     .name('isbn-bisac-tools')
     .description('Utilities for working with BISAC codes and ISBN lookups')
-    .version(version);
+    .version(version, '-v, --version', 'Output the version number');
 
   // Register all commands from the commands directory
   registerScrapeCommand(program);
@@ -75,6 +87,22 @@ export function initializeCLI(): Command {
  */
 export async function parseCommandLineArgs(args: string[] = process.argv): Promise<void> {
   const program = initializeCLI();
+
+  // Get version from the initialized program
+  const packageVersion = program.version();
+
+  // Override Commander's version option to directly handle version output
+  // This is more reliable than letting Commander handle it in global installs
+  if (args.includes('-v') || args.includes('--version')) {
+    console.log(packageVersion);
+    return Promise.resolve();
+  }
+
+  // Directly output help for debugging
+  if (args.includes('-h') || (args.includes('--help') && args.length === 2)) {
+    program.outputHelp();
+    return Promise.resolve();
+  }
 
   // Parse arguments and handle any errors
   try {
