@@ -100,26 +100,39 @@ yarn global add isbn-bisac-tools
 
 ```
 # If installed globally
-isbn-bisac-tools [options]
+isbn-bisac-tools [command] [options]
 
 # If installed locally
-npx isbn-bisac-tools [options]
+npx isbn-bisac-tools [command] [options]
 
 # Using from source (development)
 npm start          # Shows help information
 npm run scrape     # Runs the scraper
 # or
-tsx src/index.ts [options]
+tsx src/cli.ts [command] [options]
+```
+
+**Available Commands:**
+
+```
+scrape       Scrape BISAC subject headings from the BISG website
+help         Display detailed help information
+lookup       Look up BISAC subjects, codes, and headings
+browse       Interactively browse BISAC JSON files
+compare      Compare two BISAC JSON files to identify changes
+export       Export BISAC data to various formats
+isbn         Look up BISAC subjects for a book by ISBN
+enhance      Enhance book data with BISAC categories
 ```
 
 **Scraping Commands:**
 
 ```
 # Scrape all BISAC categories
-isbn-bisac-tools --scrape
+isbn-bisac-tools scrape
 
 # Scrape a single category
-isbn-bisac-tools --url https://www.bisg.org/fiction --scrape
+isbn-bisac-tools scrape --url https://www.bisg.org/fiction
 
 # Test if the selectors are working
 isbn-bisac-tools scrape --test-selector
@@ -127,26 +140,38 @@ isbn-bisac-tools scrape --test-selector
 # Test a custom selector
 isbn-bisac-tools scrape --test-selector "table td a"
 
-# Validate all critical selectors
-isbn-bisac-tools validate-selectors
+# Run in non-headless mode to see the browser
+isbn-bisac-tools scrape --no-headless
+
+# Take screenshots during scraping
+isbn-bisac-tools scrape --screenshots
+
+# Limit the number of categories to process
+isbn-bisac-tools scrape --limit 5
+
+# Merge with existing data instead of replacing
+isbn-bisac-tools scrape --merge
 ```
 
 **Lookup Commands:**
 
 ```
-# Get full label for BISAC code
-isbn-bisac-tools --code ANT007000
+# Look up a specific BISAC code
+isbn-bisac-tools lookup --code ANT007000
 
-# Get all codes for a heading
-isbn-bisac-tools --heading "FICTION"
+# Look up subjects by label (partial matching)
+isbn-bisac-tools lookup --label "Fantasy"
 
-# Get code for a specific label
-isbn-bisac-tools --label "FICTION / War & Military"
+# Look up all codes for a specific heading
+isbn-bisac-tools lookup --heading "FICTION"
 
-# Get BISAC code(s) for a book by ISBN
-isbn-bisac-tools --isbn 9781234567890
+# Look up a code by full label
+isbn-bisac-tools lookup --full-label "FICTION / Fantasy"
 
-# Enhanced ISBN lookup (saves to book_data.json)
+# Search across all BISAC data
+isbn-bisac-tools lookup --search "science"
+
+# Look up BISAC subjects for a book by ISBN (saves to book_data.json)
 isbn-bisac-tools isbn 9781234567890
 
 # Enhance book data with BISAC categories
@@ -157,8 +182,11 @@ isbn-bisac-tools enhance 9781234567890 --output custom_book_data.json
 **Analysis Commands:**
 
 ```
-# Compare two JSON files
-isbn-bisac-tools --compare
+# Compare two BISAC JSON files
+isbn-bisac-tools compare
+
+# Browse BISAC JSON files interactively
+isbn-bisac-tools browse
 
 # Export BISAC data (basic usage)
 isbn-bisac-tools export                    # Default CSV output
@@ -171,6 +199,8 @@ isbn-bisac-tools export --fields code,label # Only specific fields
 isbn-bisac-tools export --mapping '{"code":"BISAC_CODE","label":"DESCRIPTION"}' # Custom field names
 isbn-bisac-tools export --delimiter ";" # Custom CSV delimiter
 isbn-bisac-tools export -f xml --xml-root "bisac-codes" # Custom XML root element
+isbn-bisac-tools export -f xml --pretty # Pretty print XML output
+```
 
 # Show help information
 isbn-bisac-tools --help
