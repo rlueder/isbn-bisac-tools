@@ -43,7 +43,9 @@ export async function saveToJSON<T>(
     try {
       await createBackup(filePath);
     } catch (error) {
-      console.warn(`Warning: Could not create backup for ${filePath}: ${error.message}`);
+      console.warn(
+        `Warning: Could not create backup for ${filePath}: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 
@@ -64,10 +66,12 @@ export async function loadFromJSON<T>(filePath: string): Promise<T> {
     const fileContent = await fs.readFile(filePath, 'utf8');
     return JSON.parse(fileContent) as T;
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
       throw new Error(`File not found: ${filePath}`);
     }
-    throw new Error(`Error reading JSON file: ${error.message}`);
+    throw new Error(
+      `Error reading JSON file: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
@@ -94,10 +98,12 @@ export async function createBackup(filePath: string): Promise<string> {
     await fs.copyFile(filePath, backupPath);
     return backupPath;
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
       throw new Error(`Cannot create backup: File not found: ${filePath}`);
     }
-    throw new Error(`Failed to create backup: ${error.message}`);
+    throw new Error(
+      `Failed to create backup: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
@@ -134,10 +140,12 @@ export async function findLatestFile(directory: string, pattern: string): Promis
     // Return the latest file
     return fileStats[0].path;
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
       return null; // Directory doesn't exist
     }
-    throw new Error(`Error finding latest file: ${error.message}`);
+    throw new Error(
+      `Error finding latest file: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 

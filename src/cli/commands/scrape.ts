@@ -46,7 +46,7 @@ export async function executeScrapeCommand(options: ScrapeOptions): Promise<void
       browserOptions: {
         headless: options.headless !== false, // Default to true if not specified
       },
-      takeScreenshots: options.screenshots || false,
+      takeScreenshots: options.takeScreenshots || false,
       outputDir: options.outputDir || undefined,
       maxCategories: options.maxCategories ? parseInt(options.maxCategories.toString(), 10) : null,
     });
@@ -66,7 +66,7 @@ export async function executeScrapeCommand(options: ScrapeOptions): Promise<void
     try {
       await scraper.scrape({
         ...config,
-        specificUrl: options.specificUrl,
+        specificUrl: options.specificUrl as string | undefined,
         mergeWithExisting: options.mergeWithExisting,
       });
 
@@ -76,16 +76,19 @@ export async function executeScrapeCommand(options: ScrapeOptions): Promise<void
     } catch (error) {
       // Scraping failed
       spinner.fail(chalk.red('Scraping failed'));
-      ui.log(`Error: ${error.message}`, 'error');
+      ui.log(`Error: ${error instanceof Error ? error.message : String(error)}`, 'error');
 
-      if (error.stack) {
+      if (error instanceof Error && error.stack) {
         console.error(chalk.gray(error.stack));
       }
 
       process.exit(1);
     }
   } catch (error) {
-    ui.log(`Error initializing scraper: ${error.message}`, 'error');
+    ui.log(
+      `Error initializing scraper: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
     process.exit(1);
   }
 }

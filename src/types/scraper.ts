@@ -38,6 +38,10 @@ export interface ScraperConfig {
   maxCategories: number | null;
   /** Whether to take screenshots during scraping */
   takeScreenshots: boolean;
+  /** Specific URL to scrape (bypasses main page) */
+  specificUrl?: string;
+  /** Whether to merge with existing data */
+  mergeWithExisting?: boolean;
   /** Browser launch options */
   browserOptions: {
     /** Headless mode */

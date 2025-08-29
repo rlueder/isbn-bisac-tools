@@ -5,7 +5,7 @@
  * including progress indicators, interactive prompts, and formatted output.
  */
 
-import ora, { Ora } from 'ora';
+import ora, { Ora, Options } from 'ora';
 import chalk from 'chalk';
 import * as progress from './progress.js';
 
@@ -20,7 +20,7 @@ let spinner: Ora | null = null;
  * @param options Additional spinner options
  * @returns Ora spinner instance
  */
-export function createSpinner(text: string, options?: ora.Options): Ora {
+export function createSpinner(text: string, options?: Options): Ora {
   if (!spinner) {
     spinner = ora({
       text,
@@ -123,11 +123,10 @@ export * from './progress.js';
 // Default export for direct import
 export default {
   createSpinner,
-  updateProgress,
   succeedSpinner,
   failSpinner,
   formatMessage,
   log,
-  // Include progress module exports
+  // Include progress module exports which already contains updateProgress
   ...progress.default,
 };

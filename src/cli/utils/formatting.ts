@@ -104,7 +104,7 @@ export function formatInfo(message: string): string {
  * @param style Optional chalk style for the border
  * @returns Boxed message string
  */
-export function formatBox(message: string, style: chalk.ChalkFunction = chalk.cyan): string {
+export function formatBox(message: string, style = chalk.cyan): string {
   const lines = message.split('\n');
   const width = Math.max(...lines.map(line => line.length));
 

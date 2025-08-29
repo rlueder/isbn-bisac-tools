@@ -24,7 +24,9 @@ export async function loadBisacData(filePath: string = DEFAULT_DATA_PATH): Promi
     // Use the storage module to load BISAC data
     return await storage.loadBisacData(filePath);
   } catch (error) {
-    throw new Error(`Failed to load BISAC data: ${error.message}`);
+    throw new Error(
+      `Failed to load BISAC data: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 

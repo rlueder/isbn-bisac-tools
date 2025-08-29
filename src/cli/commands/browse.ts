@@ -46,7 +46,10 @@ export async function executeBrowseCommand(options: {
     // Otherwise, browse all JSON files in the directory
     await browseDirectory(options.directory || 'data');
   } catch (error) {
-    ui.log(`Error browsing JSON files: ${error.message}`, 'error');
+    ui.log(
+      `Error browsing JSON files: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
     process.exit(1);
   }
 }
@@ -76,7 +79,10 @@ async function browseSingleFile(filePath: string): Promise<void> {
     // Open the file with an interactive viewer
     await browseJsonFiles([filePath]);
   } catch (error) {
-    ui.log(`Error browsing file: ${error.message}`, 'error');
+    ui.log(
+      `Error browsing file: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
   }
 }
 
@@ -130,7 +136,10 @@ async function browseDirectory(directoryPath: string): Promise<void> {
 
     await browseSingleFile(result.file);
   } catch (error) {
-    ui.log(`Error browsing directory: ${error.message}`, 'error');
+    ui.log(
+      `Error browsing directory: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
   }
 }
 

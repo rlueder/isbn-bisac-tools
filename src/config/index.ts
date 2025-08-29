@@ -115,7 +115,9 @@ export async function loadConfigFromFile(filePath: string): Promise<Partial<Scra
     const configModule = await import(filePath);
     return configModule.default || {};
   } catch (error) {
-    console.warn(`Failed to load configuration from ${filePath}: ${error.message}`);
+    console.warn(
+      `Failed to load configuration from ${filePath}: ${error instanceof Error ? error.message : String(error)}`
+    );
     return {};
   }
 }

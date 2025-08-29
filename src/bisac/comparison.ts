@@ -115,7 +115,9 @@ export async function compareBisacJsonFiles(
 
     return result;
   } catch (error) {
-    throw new Error(`Error comparing BISAC JSON files: ${error.message}`);
+    throw new Error(
+      `Error comparing BISAC JSON files: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
@@ -353,7 +355,9 @@ export async function selectFilesForComparison(directory = 'data'): Promise<[str
 
     return [file2, file1]; // Return [older, newer] for comparison
   } catch (error) {
-    throw new Error(`Error selecting files for comparison: ${error.message}`);
+    throw new Error(
+      `Error selecting files for comparison: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
@@ -389,7 +393,9 @@ export async function createBackupOfBisacData(
     ui.log(`✅ Created backup at: ${backupPath}`, 'success');
     return backupPath;
   } catch (error) {
-    throw new Error(`Error creating backup: ${error.message}`);
+    throw new Error(
+      `Error creating backup: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 

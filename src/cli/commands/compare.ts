@@ -46,7 +46,10 @@ export async function executeCompareCommand(options: {
       try {
         await comparison.createBackupOfBisacData();
       } catch (error) {
-        ui.log(`Warning: Could not create backup: ${error.message}`, 'warning');
+        ui.log(
+          `Warning: Could not create backup: ${error instanceof Error ? error.message : String(error)}`,
+          'warning'
+        );
       }
     }
 
@@ -59,7 +62,10 @@ export async function executeCompareCommand(options: {
     // Otherwise, let the user select files to compare
     await compareInteractively(options.directory || 'data');
   } catch (error) {
-    ui.log(`Error comparing BISAC files: ${error.message}`, 'error');
+    ui.log(
+      `Error comparing BISAC files: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
     process.exit(1);
   }
 }
@@ -79,7 +85,10 @@ async function compareSpecificFiles(oldFile: string, newFile: string): Promise<v
     // Print the comparison report
     await comparison.printComparisonReport(result);
   } catch (error) {
-    ui.log(`Error comparing files: ${error.message}`, 'error');
+    ui.log(
+      `Error comparing files: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
   }
 }
 
@@ -101,7 +110,10 @@ async function compareInteractively(directory: string): Promise<void> {
     // Print the comparison report
     await comparison.printComparisonReport(result);
   } catch (error) {
-    ui.log(`Error comparing files: ${error.message}`, 'error');
+    ui.log(
+      `Error comparing files: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
   }
 }
 

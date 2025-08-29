@@ -117,12 +117,6 @@ export async function extractCategoryNotes(page: Page): Promise<string[]> {
       // Skip empty or irrelevant paragraphs
       if (!text || isExcludedText(text)) continue;
 
-      // Stop when we reach the subject codes
-      if (text.match(/^[A-Z]{3}[0-9]{6}/)) {
-        reachedSubjects = true;
-        break;
-      }
-
       // Add this paragraph as a note
       notes.push(text);
     }

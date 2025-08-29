@@ -5,7 +5,7 @@
  * instances for web scraping operations.
  */
 
-import puppeteer, { Browser, Page, PuppeteerLaunchOptions } from 'puppeteer';
+import puppeteer, { Browser, Page } from 'puppeteer';
 import { ScraperConfig } from '../types/index.js';
 import * as ui from '../ui/index.js';
 
@@ -19,15 +19,19 @@ export async function initializeBrowser(config: ScraperConfig): Promise<Browser>
     ui.updateProgressSpinner(0, 1, '', '🚀 Launching browser...');
 
     // Extract browser options from config
-    const options: PuppeteerLaunchOptions = {
+    const options = {
       ...config.browserOptions,
     };
 
     // Launch the browser
     return await puppeteer.launch(options);
   } catch (error) {
-    ui.stopSpinnerWithError(`Failed to initialize browser: ${error.message}`);
-    throw new Error(`Browser initialization failed: ${error.message}`);
+    ui.stopSpinnerWithError(
+      `Failed to initialize browser: ${error instanceof Error ? error.message : String(error)}`
+    );
+    throw new Error(
+      `Browser initialization failed: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
@@ -70,8 +74,12 @@ export async function createPage(
 
     return page;
   } catch (error) {
-    ui.stopSpinnerWithError(`Failed to create page: ${error.message}`);
-    throw new Error(`Page creation failed: ${error.message}`);
+    ui.stopSpinnerWithError(
+      `Failed to create page: ${error instanceof Error ? error.message : String(error)}`
+    );
+    throw new Error(
+      `Page creation failed: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
@@ -119,7 +127,7 @@ export async function navigateWithRetry(
     } catch (error) {
       if (attempts >= maxAttempts) {
         ui.stopSpinnerWithError(
-          `Navigation failed after ${maxAttempts} attempts: ${error.message}`
+          `Navigation failed after ${maxAttempts} attempts: ${error instanceof Error ? error.message : String(error)}`
         );
         throw error;
       }
@@ -148,7 +156,9 @@ export async function closeBrowser(browser: Browser): Promise<void> {
     ui.updateProgressSpinner(1, 1, '', '🏁 Closing browser...');
     await browser.close();
   } catch (error) {
-    console.warn(`Warning: Error closing browser: ${error.message}`);
+    console.warn(
+      `Warning: Error closing browser: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 

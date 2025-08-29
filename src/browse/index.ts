@@ -35,7 +35,10 @@ export async function browseJsonFiles(filePaths: string[] | string): Promise<boo
           .filter(file => file.endsWith('.json'))
           .map(file => path.join(dataDir, file));
       } catch (error) {
-        ui.log(`Error accessing data directory: ${error.message}`, 'error');
+        ui.log(
+          `Error accessing data directory: ${error instanceof Error ? error.message : String(error)}`,
+          'error'
+        );
         return false;
       }
     }
@@ -112,7 +115,10 @@ export async function browseJsonFiles(filePaths: string[] | string): Promise<boo
 
     return await openJsonFile(selectedFile);
   } catch (error) {
-    ui.log(`Error browsing JSON files: ${error.message}`, 'error');
+    ui.log(
+      `Error browsing JSON files: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
     return false;
   }
 }
@@ -131,7 +137,10 @@ export async function openJsonFile(filePath: string): Promise<boolean> {
     try {
       fileContent = await fs.readFile(filePath, 'utf8');
     } catch (error) {
-      ui.log(`Error reading file: ${error.message}`, 'error');
+      ui.log(
+        `Error reading file: ${error instanceof Error ? error.message : String(error)}`,
+        'error'
+      );
       return false;
     }
 
@@ -140,7 +149,10 @@ export async function openJsonFile(filePath: string): Promise<boolean> {
     try {
       jsonData = JSON.parse(fileContent);
     } catch (error) {
-      ui.log(`Error parsing JSON: ${error.message}`, 'error');
+      ui.log(
+        `Error parsing JSON: ${error instanceof Error ? error.message : String(error)}`,
+        'error'
+      );
 
       // If parsing fails, try to open the file as plain text
       return await openWithFx(fileContent);
@@ -153,10 +165,14 @@ export async function openJsonFile(filePath: string): Promise<boolean> {
             ...jsonData,
             // Display first 3 categories in preview, with count of total
             categories:
+              jsonData.categories &&
+              Array.isArray(jsonData.categories) &&
               jsonData.categories.length > 3
                 ? [
-                    ...jsonData.categories.slice(0, 3),
-                    `... ${jsonData.categories.length - 3} more categories`,
+                    ...(jsonData.categories && Array.isArray(jsonData.categories)
+                      ? jsonData.categories.slice(0, 3)
+                      : []),
+                    `... ${jsonData.categories && Array.isArray(jsonData.categories) ? jsonData.categories.length - 3 : 0} more categories`,
                   ]
                 : jsonData.categories,
           },
@@ -167,7 +183,10 @@ export async function openJsonFile(filePath: string): Promise<boolean> {
 
     return await openWithFx(displayContent);
   } catch (error) {
-    ui.log(`Error opening JSON file: ${error.message}`, 'error');
+    ui.log(
+      `Error opening JSON file: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
     return false;
   }
 }
@@ -206,7 +225,10 @@ async function openWithFx(content: string): Promise<boolean> {
         resolve(false);
       });
     } catch (error) {
-      ui.log(`Error opening with fx: ${error.message}`, 'error');
+      ui.log(
+        `Error opening with fx: ${error instanceof Error ? error.message : String(error)}`,
+        'error'
+      );
       resolve(false);
     }
   });

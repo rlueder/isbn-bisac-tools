@@ -53,8 +53,12 @@ export async function processCategoryPage(
 
     return categoryData;
   } catch (error) {
-    ui.stopSpinnerWithError(`Failed to process page: ${error.message}`);
-    throw new Error(`Error processing category page ${url}: ${error.message}`);
+    ui.stopSpinnerWithError(
+      `Failed to process page: ${error instanceof Error ? error.message : String(error)}`
+    );
+    throw new Error(
+      `Error processing category page ${url}: ${error instanceof Error ? error.message : String(error)}`
+    );
   }
 }
 
@@ -218,8 +222,15 @@ export async function processCategoryBatch(
       );
     } catch (error) {
       // Log error but continue with other URLs
-      console.error(`Error processing ${url}: ${error.message}`);
-      ui.updateProgressSpinner(i + 1, urls.length, url, `❌ Failed: ${error.message}`);
+      console.error(
+        `Error processing ${url}: ${error instanceof Error ? error.message : String(error)}`
+      );
+      ui.updateProgressSpinner(
+        i + 1,
+        urls.length,
+        url,
+        `❌ Failed: ${error instanceof Error ? error.message : String(error)}`
+      );
     }
   }
 

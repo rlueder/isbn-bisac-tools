@@ -62,7 +62,10 @@ export async function executeLookupCommand(options: {
       ui.log('Run "isbn-bisac-tools help lookup" for more information', 'info');
     }
   } catch (error) {
-    ui.log(`Error during lookup: ${error.message}`, 'error');
+    ui.log(
+      `Error during lookup: ${error instanceof Error ? error.message : String(error)}`,
+      'error'
+    );
     process.exit(1);
   }
 }
