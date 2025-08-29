@@ -1,3 +1,10 @@
+## <small>0.3.2 (2025-08-29)</small>
+
+* fix: module exports ([ee61b03](https://github.com/yourusername/isbn-bisac-tools/commit/ee61b03))
+* fix: resolve export command issues and improve error handling ([cb49190](https://github.com/yourusername/isbn-bisac-tools/commit/cb49190))
+
+
+
 ## <small>0.3.1 (2025-08-29)</small>
 
 * fix: gh actions ([d4b041c](https://github.com/yourusername/isbn-bisac-tools/commit/d4b041c))
