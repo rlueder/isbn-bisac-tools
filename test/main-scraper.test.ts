@@ -39,20 +39,27 @@ vi.mock('../src/browse/index.js', () => ({
 }));
 
 // Mock fs for file access
-vi.mock('fs', () => ({
-  promises: {
-    mkdir: vi.fn().mockResolvedValue(undefined),
-    writeFile: vi.fn().mockResolvedValue(undefined),
-    readFile: vi.fn().mockResolvedValue('[]'),
-    access: vi.fn().mockResolvedValue(undefined),
-    stat: vi.fn().mockResolvedValue({
-      mtime: new Date('2023-01-01T00:00:00Z'),
-    }),
-    copyFile: vi.fn().mockResolvedValue(undefined),
-  },
-  existsSync: vi.fn().mockReturnValue(true),
-  readdirSync: vi.fn().mockReturnValue(['bisac-data.json']),
-}));
+vi.mock('fs', () => {
+  const mockFs = {
+    promises: {
+      mkdir: vi.fn().mockResolvedValue(undefined),
+      writeFile: vi.fn().mockResolvedValue(undefined),
+      readFile: vi.fn().mockResolvedValue('[]'),
+      access: vi.fn().mockResolvedValue(undefined),
+      stat: vi.fn().mockResolvedValue({
+        mtime: new Date('2023-01-01T00:00:00Z'),
+      }),
+      copyFile: vi.fn().mockResolvedValue(undefined),
+    },
+    existsSync: vi.fn().mockReturnValue(true),
+    readdirSync: vi.fn().mockReturnValue(['bisac-data.json']),
+  };
+
+  return {
+    ...mockFs,
+    default: mockFs,
+  };
+});
 
 describe('Main Scraper Functionality', () => {
   let browserMock: Partial<Browser>;

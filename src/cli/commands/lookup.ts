@@ -9,6 +9,7 @@ import { Command } from 'commander';
 import chalk from 'chalk';
 import * as lookup from '../../bisac/lookup.js';
 import * as ui from '../../ui/index.js';
+import { getDefaultBisacDataPath } from '../../utils/paths.js';
 import { formatTableHeader, formatTableRow } from '../utils/formatting.js';
 
 /**
@@ -25,7 +26,7 @@ export function registerLookupCommand(program: Command): Command {
     .option('-H, --heading <heading>', 'Look up all codes for a specific heading')
     .option('-f, --full-label <fullLabel>', 'Look up a code by full label (HEADING / SUBJECT)')
     .option('-s, --search <query>', 'Search across all BISAC data')
-    .option('-p, --path <path>', 'Path to the BISAC data file (defaults to data/bisac-data.json)')
+    .option('-p, --path <path>', `Path to the BISAC data file (defaults to auto-detected location)`)
     .action(executeLookupCommand);
 }
 
@@ -52,7 +53,7 @@ export async function executeLookupCommand(options: {
     } else if (options.fullLabel) {
       await lookupByFullLabel(options.fullLabel, options.path);
     } else if (options.search) {
-      await searchBisac(options.search, options.path);
+      await searchBisacData(options.search, options.path);
     } else {
       // No specific lookup option provided
       ui.log(
@@ -75,10 +76,14 @@ export async function executeLookupCommand(options: {
  * @param code BISAC code to look up
  * @param dataPath Optional path to the BISAC data file
  */
-async function lookupByCode(code: string, _dataPath?: string): Promise<void> {
+async function lookupByCode(code: string, dataPath?: string): Promise<void> {
   ui.log(`Looking up BISAC code: ${chalk.cyan(code)}`, 'info');
 
-  const fullLabel = await lookup.getFullLabelFromCode(code);
+  const fullLabel = await lookup.getFullLabelFromCode(
+    code,
+    undefined,
+    dataPath || getDefaultBisacDataPath()
+  );
 
   if (fullLabel) {
     ui.log('Found BISAC subject:', 'success');
@@ -96,10 +101,14 @@ async function lookupByCode(code: string, _dataPath?: string): Promise<void> {
  * @param label Label to search for
  * @param dataPath Optional path to the BISAC data file
  */
-async function lookupByLabel(label: string, _dataPath?: string): Promise<void> {
+async function lookupByLabel(label: string, dataPath?: string): Promise<void> {
   ui.log(`Looking up BISAC subjects with label containing: ${chalk.cyan(label)}`, 'info');
 
-  const matches = await lookup.findSubjectsByPartialLabel(label);
+  const matches = await lookup.findSubjectsByPartialLabel(
+    label,
+    undefined,
+    dataPath || getDefaultBisacDataPath()
+  );
 
   if (matches.length > 0) {
     ui.log(`Found ${matches.length} matching subjects:`, 'success');
@@ -129,10 +138,14 @@ async function lookupByLabel(label: string, _dataPath?: string): Promise<void> {
  * @param heading Heading to look up
  * @param dataPath Optional path to the BISAC data file
  */
-async function lookupByHeading(heading: string, _dataPath?: string): Promise<void> {
+async function lookupByHeading(heading: string, dataPath?: string): Promise<void> {
   ui.log(`Looking up BISAC subjects under heading: ${chalk.cyan(heading)}`, 'info');
 
-  const subjects = await lookup.getCodesForHeading(heading);
+  const subjects = await lookup.getCodesForHeading(
+    heading,
+    undefined,
+    dataPath || getDefaultBisacDataPath()
+  );
 
   if (subjects.length > 0) {
     ui.log(`Found ${subjects.length} subjects under heading "${heading}":`, 'success');
@@ -160,10 +173,14 @@ async function lookupByHeading(heading: string, _dataPath?: string): Promise<voi
  * @param fullLabel Full label in the format "HEADING / SUBJECT"
  * @param dataPath Optional path to the BISAC data file
  */
-async function lookupByFullLabel(fullLabel: string, _dataPath?: string): Promise<void> {
+async function lookupByFullLabel(fullLabel: string, dataPath?: string): Promise<void> {
   ui.log(`Looking up BISAC code for full label: ${chalk.cyan(fullLabel)}`, 'info');
 
-  const code = await lookup.getCodeFromFullLabel(fullLabel);
+  const code = await lookup.getCodeFromFullLabel(
+    fullLabel,
+    undefined,
+    dataPath || getDefaultBisacDataPath()
+  );
 
   if (code) {
     ui.log('Found BISAC code:', 'success');
@@ -181,10 +198,10 @@ async function lookupByFullLabel(fullLabel: string, _dataPath?: string): Promise
  * @param query Search query
  * @param dataPath Optional path to the BISAC data file
  */
-async function searchBisac(query: string, _dataPath?: string): Promise<void> {
+async function searchBisacData(query: string, dataPath?: string): Promise<void> {
   ui.log(`Searching BISAC data for: ${chalk.cyan(query)}`, 'info');
 
-  const matches = await lookup.searchBisac(query);
+  const matches = await lookup.searchBisac(query, undefined, dataPath || getDefaultBisacDataPath());
 
   if (matches.length > 0) {
     ui.log(`Found ${matches.length} matching results:`, 'success');

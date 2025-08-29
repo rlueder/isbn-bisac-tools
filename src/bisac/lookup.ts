@@ -23,9 +23,10 @@ import * as ui from '../ui/index.js';
  */
 export async function getFullLabelFromCode(
   code: string,
-  data?: BisacData
+  data?: BisacData,
+  dataPath?: string
 ): Promise<string | undefined> {
-  const bisacData = data || (await loadBisacData());
+  const bisacData = data || (await loadBisacData(dataPath));
 
   // Normalize the code by removing any whitespace and converting to uppercase
   const normalizedCode = code.trim().toUpperCase();
@@ -57,8 +58,12 @@ export async function getFullLabelFromCode(
  * @param data Optional BISAC data to use (loads from file if not provided)
  * @returns Array of subjects in the heading
  */
-export async function getCodesForHeading(heading: string, data?: BisacData): Promise<Subject[]> {
-  const bisacData = data || (await loadBisacData());
+export async function getCodesForHeading(
+  heading: string,
+  data?: BisacData,
+  dataPath?: string
+): Promise<Subject[]> {
+  const bisacData = data || (await loadBisacData(dataPath));
 
   // Normalize the heading by trimming whitespace and converting to uppercase for case-insensitive comparison
   const normalizedHeading = heading.trim().toUpperCase();
@@ -84,7 +89,8 @@ export async function getCodesForHeading(heading: string, data?: BisacData): Pro
  */
 export async function getCodeFromFullLabel(
   fullLabel: string,
-  data?: BisacData
+  data?: BisacData,
+  dataPath?: string
 ): Promise<string | undefined> {
   // Validate the label format
   if (!fullLabel.includes('/')) {
@@ -93,7 +99,7 @@ export async function getCodeFromFullLabel(
     return undefined;
   }
 
-  const bisacData = data || (await loadBisacData());
+  const bisacData = data || (await loadBisacData(dataPath));
 
   // Split the full label into heading and subject
   const [headingPart, subjectPart] = fullLabel.split('/').map(part => part.trim());
@@ -132,9 +138,10 @@ export async function getCodeFromFullLabel(
  */
 export async function findSubjectsByPartialLabel(
   partialLabel: string,
-  data?: BisacData
+  data?: BisacData,
+  dataPath?: string
 ): Promise<Array<{ category: string; subject: Subject }>> {
-  const bisacData = data || (await loadBisacData());
+  const bisacData = data || (await loadBisacData(dataPath));
   const matches: Array<{ category: string; subject: Subject }> = [];
 
   // Normalize the search term by trimming whitespace and converting to lowercase
@@ -164,9 +171,10 @@ export async function findSubjectsByPartialLabel(
  */
 export async function getHeadingForCode(
   code: string,
-  data?: BisacData
+  data?: BisacData,
+  dataPath?: string
 ): Promise<string | undefined> {
-  const bisacData = data || (await loadBisacData());
+  const bisacData = data || (await loadBisacData(dataPath));
 
   // Normalize the code
   const normalizedCode = code.trim().toUpperCase();
@@ -189,9 +197,10 @@ export async function getHeadingForCode(
  */
 export async function getSubjectForCode(
   code: string,
-  data?: BisacData
+  data?: BisacData,
+  dataPath?: string
 ): Promise<Subject | undefined> {
-  const bisacData = data || (await loadBisacData());
+  const bisacData = data || (await loadBisacData(dataPath));
 
   // Normalize the code
   const normalizedCode = code.trim().toUpperCase();
@@ -214,9 +223,10 @@ export async function getSubjectForCode(
  */
 export async function searchBisac(
   query: string,
-  data?: BisacData
+  data?: BisacData,
+  dataPath?: string
 ): Promise<Array<{ category: string; subject: Subject }>> {
-  const bisacData = data || (await loadBisacData());
+  const bisacData = data || (await loadBisacData(dataPath));
   const matches: Array<{ category: string; subject: Subject }> = [];
 
   // Normalize the search term

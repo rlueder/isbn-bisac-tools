@@ -5,14 +5,14 @@
  * including lookup, conversion, and comparison utilities.
  */
 
-import path from 'path';
 import { BisacData, Category, Subject } from '../types/index.js';
 import * as storage from '../storage/index.js';
+import { getDefaultBisacDataPath } from '../utils/paths.js';
 
 /**
  * Default path to BISAC data file
  */
-const DEFAULT_DATA_PATH = path.join(process.cwd(), 'data', 'bisac-data.json');
+const DEFAULT_DATA_PATH = getDefaultBisacDataPath();
 
 /**
  * Load BISAC data from a JSON file
