@@ -25,7 +25,7 @@
     "lint": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\" --fix",
     "prepare": "husky",
-    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/cli.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/",
+    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/cli.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/ && npm run changelog",
     "scrape": "tsx src/cli.ts --scrape",
     "scrape:url": "tsx src/cli.ts --url",
     "start": "tsx src/cli.ts --help",
@@ -33,7 +33,7 @@
     "test:bisac": "tsx test/bisac-selection.script.ts",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
-    "version": "npm run changelog && git add CHANGELOG.md"
+    "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
