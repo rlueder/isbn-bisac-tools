@@ -163,6 +163,13 @@ jobs:
 
       - name: Create git tag
         run: |
+          # Check if tag exists
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "Tag v${{ steps.version.outputs.version }} already exists, deleting it"
+            git tag -d "v${{ steps.version.outputs.version }}"
+            git push origin :"v${{ steps.version.outputs.version }}"
+          fi
+          # Create new tag
           git tag -a "v${{ steps.version.outputs.version }}" -m "Release v${{ steps.version.outputs.version }}"
 
       - name: Publish to npm
@@ -173,7 +180,6 @@ jobs:
 
       - name: Push changes
         run: |
-          git push
-          git push --tags
+          git push --follow-tags
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
