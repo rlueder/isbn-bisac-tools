@@ -85,6 +85,8 @@ export interface ScrapeOptions {
   mergeWithExisting?: boolean;
   /** Custom browser launch options */
   browserOptions?: Record<string, unknown>;
+  /** Test a specific selector against the website (true for default, string for custom) */
+  testSelector?: boolean | string;
 }
 
 /**

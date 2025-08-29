@@ -104,6 +104,13 @@ export async function scrapeAllCategories(config: ScraperConfig): Promise<BisacD
       const urlsToProcess =
         config.maxCategories !== null ? categoryUrls.slice(0, config.maxCategories) : categoryUrls;
 
+      if (urlsToProcess.length === 0) {
+        ui.stopSpinnerWithError(
+          `No category URLs found. The selector "${config.mainPage.categoryLinks}" may need to be updated.`
+        );
+        throw new Error('No category URLs found to process');
+      }
+
       ui.updateProgressSpinner(
         0,
         urlsToProcess.length,
@@ -128,6 +135,11 @@ export async function scrapeAllCategories(config: ScraperConfig): Promise<BisacD
         `Completed! Processed ${categories.length} categories with ` +
           `${categories.reduce((count, cat) => count + cat.subjects.length, 0)} subjects.`
       );
+    } catch (error) {
+      ui.stopSpinnerWithError(
+        `Error during scraping: ${error instanceof Error ? error.message : String(error)}`
+      );
+      throw error;
     } finally {
       await page.close();
     }
@@ -137,12 +149,34 @@ export async function scrapeAllCategories(config: ScraperConfig): Promise<BisacD
 }
 
 /**
+ * Validate the selector used to find category links
+ * @param page Puppeteer page object
+ * @param selector CSS selector to validate
+ * @returns Boolean indicating if the selector is valid and found elements
+ */
+async function validateCategorySelector(page: Page, selector: string): Promise<boolean> {
+  return await page.evaluate((sel: string) => {
+    const links = document.querySelectorAll(sel);
+    return links.length > 0;
+  }, selector);
+}
+
+/**
  * Extract category URLs from the main page
  * @param page Puppeteer page object
  * @param config Scraper configuration
  * @returns Array of category URLs
  */
 async function extractCategoryUrls(page: Page, config: ScraperConfig): Promise<string[]> {
+  // Validate the selector before using it
+  const isSelectorValid = await validateCategorySelector(page, config.mainPage.categoryLinks);
+
+  if (!isSelectorValid) {
+    throw new Error(
+      `No elements found with selector "${config.mainPage.categoryLinks}". The website structure may have changed.`
+    );
+  }
+
   return await page.evaluate(selector => {
     const links = Array.from(document.querySelectorAll(selector));
     return links

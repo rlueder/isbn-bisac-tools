@@ -120,6 +120,15 @@ isbn-bisac-tools --scrape
 
 # Scrape a single category
 isbn-bisac-tools --url https://www.bisg.org/fiction --scrape
+
+# Test if the selectors are working
+isbn-bisac-tools scrape --test-selector
+
+# Test a custom selector
+isbn-bisac-tools scrape --test-selector "table td a"
+
+# Validate all critical selectors
+isbn-bisac-tools validate-selectors
 ```
 
 **Lookup Commands:**
@@ -570,7 +579,10 @@ For more details, see [PUBLISHING.md](./PUBLISHING.md).
 - **JSON Exploration**: Use `npm run browse:json` to interactively explore JSON files
 - **Screenshots**: Check the `./screenshots` directory for debugging visuals
 - **Rate Limiting**: Increase delay values if the website is throttling requests
-- **Website Structure Changes**: Adjust selectors if needed
+- **Website Structure Changes**: 
+  - Use `npm run scrape -- --test-selector` to validate selectors
+  - Run `npm run validate-selectors` to check all critical selectors
+  - See [SELECTOR_VALIDATION.md](docs/SELECTOR_VALIDATION.md) for more details
 - **File Overwrite Issues**: The scraper prompts before overwriting existing files
 - **Command-line Issues**:
   - Use quotes around arguments with spaces

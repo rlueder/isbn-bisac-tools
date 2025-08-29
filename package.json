@@ -1,6 +1,6 @@
 {
   "name": "isbn-bisac-tools",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "A toolkit for working with BISAC subject headings and ISBN lookups",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
@@ -47,6 +47,7 @@
     "export:all": "npm run export:test && npm run export:direct",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest",
+    "validate-selectors": "node scripts/validate-selectors.js",
     "version": "conventional-changelog -p angular -i CHANGELOG.md -s && git add CHANGELOG.md"
   },
   "lint-staged": {

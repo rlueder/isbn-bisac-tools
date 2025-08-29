@@ -29,6 +29,7 @@ export function registerScrapeCommand(program: Command): Command {
     .option('-o, --output <path>', 'Custom output directory')
     .option('-l, --limit <number>', 'Maximum number of categories to process')
     .option('-m, --merge', 'Merge with existing data instead of replacing')
+    .option('--test-selector [selector]', 'Test a specific selector against the website')
     .action(executeScrapeCommand);
 }
 
@@ -50,6 +51,64 @@ export async function executeScrapeCommand(options: ScrapeOptions): Promise<void
       outputDir: options.outputDir || undefined,
       maxCategories: options.maxCategories ? parseInt(options.maxCategories.toString(), 10) : null,
     });
+
+    // If a custom selector is provided for testing
+    if (options.testSelector !== undefined) {
+      const selectorToTest =
+        typeof options.testSelector === 'string'
+          ? options.testSelector
+          : config.mainPage.categoryLinks;
+
+      ui.log(`Testing selector: "${selectorToTest}"`, 'info');
+
+      // Start spinner for selector test
+      const spinner = ora({
+        text: 'Testing selector against the website...',
+        spinner: 'dots',
+      }).start();
+
+      try {
+        // Import the browser module for testing the selector
+        const browser = await import('../../scraper/browser.js');
+        const instance = await browser.initializeBrowser(config);
+        const page = await browser.createPage(instance, config.startUrl);
+
+        // Test the selector - first wait for network to be idle
+        await page.waitForNetworkIdle();
+        const elements = await page.$$eval(selectorToTest, els => els.length);
+
+        if (elements > 0) {
+          spinner.succeed(chalk.green(`Selector test successful! Found ${elements} elements.`));
+
+          // Get some examples of what was matched
+          const examples = await page.$$eval(selectorToTest, els =>
+            els.slice(0, 3).map(el => ({
+              text: el.textContent?.trim() || '(no text)',
+              href: el.getAttribute('href') || '(no href)',
+            }))
+          );
+
+          ui.log('Example matches:', 'info');
+          examples.forEach((ex, i) => {
+            ui.log(`  ${i + 1}. "${ex.text}" → ${ex.href}`, 'info');
+          });
+        } else {
+          spinner.fail(
+            chalk.red(`Selector test failed! No elements found with "${selectorToTest}"`)
+          );
+          ui.log('The website structure may have changed. Try a different selector.', 'error');
+        }
+
+        // Clean up
+        await page.close();
+        await instance.close();
+        return;
+      } catch (error) {
+        spinner.fail(chalk.red('Selector test failed'));
+        ui.log(`Error: ${error instanceof Error ? error.message : String(error)}`, 'error');
+        process.exit(1);
+      }
+    }
 
     // If specific URL is provided, use it
     if (options.specificUrl) {

@@ -49,7 +49,7 @@ export const DEFAULT_SCRAPER_CONFIG: ScraperConfig = {
   },
   // Selectors
   mainPage: {
-    categoryLinks: '.field-items li a',
+    categoryLinks: 'table a',
   },
   // Category page selectors
   categoryPage: {

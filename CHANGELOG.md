@@ -1,3 +1,9 @@
+## <small>0.3.5 (2025-08-29)</small>
+
+* feat: add selector validation to prevent silent failures ([a4b2c3d](https://github.com/yourusername/isbn-bisac-tools/commit/a4b2c3d))
+* fix: update category link selector for new website structure ([a4b2c3d](https://github.com/yourusername/isbn-bisac-tools/commit/a4b2c3d))
+* docs: add selector validation documentation ([a4b2c3d](https://github.com/yourusername/isbn-bisac-tools/commit/a4b2c3d))
+
 ## <small>0.3.4 (2025-06-26)</small>
 
 * fix: directly handle version and help flags for global CLI installation ([fdcfa44](https://github.com/yourusername/isbn-bisac-tools/commit/fdcfa44))
