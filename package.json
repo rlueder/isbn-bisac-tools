@@ -5,14 +5,25 @@
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
   "bin": {
-    "isbn-bisac-tools": "dist/src/cli.js"
+    "isbn-bisac-tools": "bin/cli.js"
   },
   "files": [
     "dist",
     "lib",
-    "data"
+    "data",
+    "bin"
   ],
   "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/src/index.js",
+      "types": "./dist/src/index.d.ts"
+    },
+    "./cli": {
+      "import": "./dist/src/cli.js",
+      "types": "./dist/src/cli.d.ts"
+    }
+  },
   "scripts": {
     "browse:json": "tsx src/browse-json.ts",
     "build": "npm run clean && npx tsc -p tsconfig.build.json --listEmittedFiles",
@@ -25,7 +36,7 @@
     "lint": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\"",
     "lint:fix": "eslint \"src/**/*.ts\" \"lib/**/*.ts\" \"test/**/*.ts\" --fix",
     "prepare": "husky",
-    "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/cli.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/ && npm run changelog",
+    "prepublishOnly": "npm run clean && npm run build && mkdir -p bin && echo '#!/usr/bin/env node\nimport(new URL(\"../dist/src/cli.js\", import.meta.url)).catch(console.error);' > bin/cli.js && chmod +x bin/cli.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/ && npm run changelog",
     "scrape": "tsx src/cli.ts --scrape",
     "scrape:url": "tsx src/cli.ts --url",
     "start": "tsx src/cli.ts --help",
