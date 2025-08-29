@@ -18,13 +18,13 @@
       "import": "./dist/src/index.js",
       "types": "./dist/src/index.d.ts"
     },
-    "./cli": {
+    "cli": {
       "import": "./dist/src/cli.js",
       "types": "./dist/src/cli.d.ts"
     }
   },
   "scripts": {
-    "browse:json": "tsx src/browse-json.ts",
+    "browse:json": "tsx src/cli.ts browse",
     "build": "npm run clean && npx tsc -p tsconfig.build.json --listEmittedFiles",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -r 1",
     "changelog:first": "conventional-changelog -p angular -i CHANGELOG.md -s -r 0",
@@ -37,9 +37,9 @@
     "lint:scripts": "eslint \"scripts/**/*.js\" --rule 'no-undef:0' --rule 'no-console:0'",
     "prepare": "husky",
     "prepublishOnly": "npm run clean && npm run build && chmod +x dist/src/cli.js && cp package.json dist/ && mkdir -p dist/data && cp -r data/* dist/data/ && npm run changelog",
-    "scrape": "tsx src/cli.ts --scrape",
-    "scrape:url": "tsx src/cli.ts --url",
-    "start": "tsx src/cli.ts --help",
+    "scrape": "tsx src/cli.ts scrape",
+    "scrape:url": "tsx src/cli.ts scrape --url",
+    "start": "tsx src/cli.ts",
     "test": "vitest run",
     "test:bisac": "tsx test/bisac-selection.script.ts",
     "export:test": "node scripts/test-export.js",
