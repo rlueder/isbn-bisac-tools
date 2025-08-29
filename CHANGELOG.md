@@ -1,7 +1,11 @@
+## <small>0.3.4 (2025-06-26)</small>
+
+* fix: directly handle version and help flags for global CLI installation ([fdcfa44](https://github.com/yourusername/isbn-bisac-tools/commit/fdcfa44))
+
 ## <small>0.3.3 (2025-06-26)</small>
 
-* fix: make CLI commands display output when installed globally ([commit-hash])
-* fix: use direct package.json version reading instead of npm_package_version env var ([commit-hash])
+* fix: make CLI commands display output when installed globally ([0e14dd5](https://github.com/yourusername/isbn-bisac-tools/commit/0e14dd5))
+* fix: use direct package.json version reading instead of npm_package_version env var ([0e14dd5](https://github.com/yourusername/isbn-bisac-tools/commit/0e14dd5))
 
 ## <small>0.3.2 (2025-08-29)</small>
 
