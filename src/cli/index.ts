@@ -14,6 +14,9 @@ import { registerBrowseCommand } from './commands/browse.js';
 import { registerCompareCommand } from './commands/compare.js';
 import { registerExportCommand } from './commands/export.js';
 import { registerIsbnCommand } from './commands/isbn.js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 /**
  * Initialize the CLI with all available commands
@@ -22,11 +25,37 @@ import { registerIsbnCommand } from './commands/isbn.js';
 export function initializeCLI(): Command {
   const program = new Command();
 
+  // Get version from package.json
+  let version = '0.0.0';
+  try {
+    // For ESM, we need to get the directory path differently than in CommonJS
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = dirname(__filename);
+
+    // Try to find package.json by going up directories
+    // First try: dist/src/cli -> dist/src -> dist -> root
+    const packagePath = join(__dirname, '../../../package.json');
+    try {
+      const packageJson = JSON.parse(readFileSync(packagePath, 'utf8'));
+      version = packageJson.version;
+    } catch (e) {
+      // If that fails, we might be running from the source directory
+      // Try: src/cli -> src -> root
+      const altPackagePath = join(__dirname, '../../package.json');
+      const packageJson = JSON.parse(readFileSync(altPackagePath, 'utf8'));
+      version = packageJson.version;
+    }
+  } catch (error) {
+    // Fall back to npm_package_version or default
+    version = process.env.npm_package_version || '0.0.0';
+    console.error('Warning: Unable to determine package version, using fallback:', version);
+  }
+
   // Set up the program metadata
   program
     .name('isbn-bisac-tools')
     .description('Utilities for working with BISAC codes and ISBN lookups')
-    .version(process.env.npm_package_version || '0.0.0');
+    .version(version);
 
   // Register all commands from the commands directory
   registerScrapeCommand(program);

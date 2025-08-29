@@ -1,7 +1,13 @@
+## <small>0.3.3 (2025-06-26)</small>
+
+* fix: make CLI commands display output when installed globally ([commit-hash])
+* fix: use direct package.json version reading instead of npm_package_version env var ([commit-hash])
+
 ## <small>0.3.2 (2025-08-29)</small>
 
 * fix: module exports ([ee61b03](https://github.com/yourusername/isbn-bisac-tools/commit/ee61b03))
 * fix: resolve export command issues and improve error handling ([cb49190](https://github.com/yourusername/isbn-bisac-tools/commit/cb49190))
+
 
 
 

@@ -576,6 +576,7 @@ For more details, see [PUBLISHING.md](./PUBLISHING.md).
   - Use quotes around arguments with spaces
   - In Windows command prompt, use double quotes
   - In PowerShell, escape special characters (e.g., `^&`)
+  - If no output appears when using `-v`, `--version`, or `--help`, make sure you're using version 0.3.3 or later
 
 ## Contributing
 
