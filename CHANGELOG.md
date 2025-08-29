@@ -6,6 +6,12 @@
 
 # Changelog
 
+## <small>0.2.13 (2024-03-27)</small>
+
+* feat: add data export functionality with CSV, Excel, and XML support ([commit-hash])
+* feat: add customizable field mappings for exports ([commit-hash])
+* feat: add format-specific export options ([commit-hash])
+
 ## <small>0.2.12 (2024-03-27)</small>
 
 * fix: execution of npm module ([3522453](https://github.com/yourusername/isbn-bisac-tools/commit/3522453))
